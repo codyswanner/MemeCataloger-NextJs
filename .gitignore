@@ -1,0 +1,19 @@
+# dependencies
+/frontend/memecatalgoer/node_modules/
+
+# media
+/frontend/memecatalgoer/public/
+
+# system-specific project files
+/MemeCataloger/__pycache__/
+*.pyc
+
+# secrets
+db-pw.txt
+django-db-pw.txt
+
+# misc
+npm-debug.log*
+/python312/
+/backend/venv/
+.idea/

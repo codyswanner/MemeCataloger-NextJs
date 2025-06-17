@@ -1,0 +1,55 @@
+services:
+  db:
+    image: mysql:8
+    restart: always
+    user: root
+    secrets:
+      - db-root-pw
+      - django-db-pw
+    environment:
+      MYSQL_ROOT_PASSWORD: /run/secrets/db-root-pw
+      MYSQL_DATABASE: memecataloger
+      MYSQL_USER: django
+      MYSQL_PASSWORD_FILE: /run/secrets/django-db-pw
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    expose:
+      - 3306:3306
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/memecataloger:/home/front-runner/memecataloger
+
+  backend:
+    build:
+      context: ./backend
+      secrets:
+        - django-db-pw
+    secrets:
+      - django-db-pw
+    environment:
+      DB_PW_FILE: /run/secrets/django-db-pw
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+volumes:
+  db-data:
+
+secrets:
+  django-db-pw:
+    file: ./django-db-pw.txt
+  db-root-pw:
+    file: ./db-pw.txt

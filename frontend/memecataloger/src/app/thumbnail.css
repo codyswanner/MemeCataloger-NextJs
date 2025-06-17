@@ -1,0 +1,15 @@
+.thumbnail-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &:hover{opacity:0.8;};
+}
+
+.thumbnail-container {
+  aspect-ratio: 1/1;
+  width: 98%;
+  overflow: hidden;
+  margin: .5vh
+}
