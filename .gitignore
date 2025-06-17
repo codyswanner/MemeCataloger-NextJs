@@ -17,3 +17,4 @@ npm-debug.log*
 /python312/
 /backend/venv/
 .idea/
+/backend/api/migrations/
