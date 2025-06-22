@@ -28,7 +28,7 @@ describe('Thumbnail', () => {
       render(
         <Thumbnail src={'/cow.moo'} id={1} />
       );
-    } catch (e) {
+    } catch {
       // error expected; do nothing, confirm in asserts
     };
 
