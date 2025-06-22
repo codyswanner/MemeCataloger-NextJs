@@ -27,6 +27,6 @@ jobs:
         pip install -r ./backend/requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python ./backend/manage.py test
     - name: Ruff linter
       run: ruff check
