@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 'frontend'
+        working-directory: 'frontend/memecataloger'
     strategy:
       matrix:
         node-version: [22.x]
