@@ -2,7 +2,8 @@
 /frontend/memecatalgoer/node_modules/
 
 # media
-/frontend/memecatalgoer/public/
+/frontend/memecataloger/public/
+/backend/media/
 
 # system-specific project files
 /MemeCataloger/__pycache__/
