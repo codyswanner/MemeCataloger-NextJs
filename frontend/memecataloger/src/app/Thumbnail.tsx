@@ -1,10 +1,9 @@
 import { default as NextJsImage } from "next/image";
-import { headers } from 'next/headers';
 
 import './thumbnail.css';
 
 
-export default async function Thumbnail({src, id} : {src: string, id: number}){
+export default function Thumbnail({src, id} : {src: string, id: number}){
 
   const videoFileTypesRegex: RegExp = /.+\.(mp4|mov|avi|mkv|wmv|flv|webm)/i;
   const imageFileTypesRegex: RegExp = /.+\.(jpg|jpeg|png|webp|gif|bmp|svg)/i;
@@ -18,7 +17,11 @@ export default async function Thumbnail({src, id} : {src: string, id: number}){
   } else if (imageFileTypesRegex.test(src)) {
     return(
       <div className="thumbnail-container" data-testid="image-thumbnail">
-        <a href={"http://" + (await headers()).get('host') + "/image/" + id}>
+        {/* a tag points to a URL to be set up later.
+          * Also should use next/headers (async) to get host,
+          * rather than hard-coded 127.0.0.1; pending E2E testing setup.
+          * See https://nextjs.org/docs/app/guides/testing/jest */}
+        <a href={"http://127.0.0.1:8000/image/" + id}>
           <NextJsImage
             className="thumbnail-img"
             src={src}
