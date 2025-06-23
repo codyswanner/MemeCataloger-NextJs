@@ -1,5 +1,4 @@
 import ImageList from "./ImageList";
-import Thumbnail from "./Thumbnail";
 import styles from "./page.module.css";
 
 interface Image {
