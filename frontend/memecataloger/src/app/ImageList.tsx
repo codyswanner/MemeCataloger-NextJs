@@ -8,9 +8,6 @@ interface Image {
 };
 
 export default function ImageList({imageList}: {imageList: Array<Image>}) {
-  console.log(imageList);
-
-  imageList.map((image) => console.log(image.source));
 
   return (
     <div className='image-grid-container'>
