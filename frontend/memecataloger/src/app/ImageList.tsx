@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import Thumbnail from './Thumbnail';
 import './ImageList.css';
 
@@ -7,8 +9,12 @@ interface Image {
   id: number
 };
 
-export default function ImageList({imageList}: {imageList: Array<Image>}) {
+export default async function ImageList() {
 
+  axios.defaults.baseURL = 'http://backend:8000';
+  const response = await axios.get('/api/image/');
+  const imageList: Array<Image> = response.data;
+  
   return (
     <div className='image-grid-container'>
       {imageList.map((image) => 
