@@ -6,13 +6,12 @@ import getImageList from "./getImageList";
 
 
 export default async function Home() {
-  const imageList = getImageList();
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <Suspense fallback={<div>Loading...</div>}>
-          <ImageList imagePromise={imageList}/>
+          <ImageList/>
         </Suspense>
       </main>
     </div>

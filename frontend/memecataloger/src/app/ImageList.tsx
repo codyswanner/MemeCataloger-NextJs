@@ -4,6 +4,7 @@ import { use } from 'react';
 
 import Thumbnail from './Thumbnail';
 import './ImageList.css';
+import getImageList from './getImageList';
 
 
 interface Image {
@@ -11,8 +12,8 @@ interface Image {
   id: number
 };
 
-export default function ImageList({imagePromise} : {imagePromise: Promise<Image[]>}) {
-  const imageList = use(imagePromise);
+export default function ImageList() {
+  const imageList: Image[] = use(getImageList());
   
   return (
     <div className='image-grid-container'>
