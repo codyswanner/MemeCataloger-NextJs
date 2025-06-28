@@ -2,7 +2,6 @@ import { Suspense } from "react";
 
 import ImageList from "./ImageList";
 import styles from "./page.module.css";
-import getImageList from "./getImageList";
 
 
 export default async function Home() {
