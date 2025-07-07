@@ -33,6 +33,7 @@ ImageTag
     and ImageTag is created to signify this relationship.
 """
 
+import uuid
 from django.db import models
 
 
@@ -47,6 +48,7 @@ class AppUser(models.Model):
         The user-defined screen name.
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=25, unique=True)
 
 
@@ -69,6 +71,7 @@ class Image(models.Model):
         A user-defined text description of the media.
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     source = models.ImageField(max_length=1000)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     description = models.CharField(max_length=1400, default='')
@@ -88,6 +91,7 @@ class Tag(models.Model):
     owner: AppUser
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=25)
     owner = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 
