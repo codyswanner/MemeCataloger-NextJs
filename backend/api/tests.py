@@ -9,11 +9,11 @@ Intentionally excludes the following modules:
 
 from django.test import Client, TestCase
 import re
+from .models import AppUser, Image, Tag, ImageTag
+from django.db.utils import IntegrityError
 
 
 """Tests for models.py"""
-from .models import *
-from django.db.utils import IntegrityError
 
 class AppUserTestCase(TestCase):
   def setUp(self) -> None:
