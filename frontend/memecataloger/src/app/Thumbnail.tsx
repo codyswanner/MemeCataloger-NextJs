@@ -21,7 +21,7 @@ export default function Thumbnail({src, id} : {src: string, id: number}){
           * Also should use next/headers (async) to get host,
           * rather than hard-coded 127.0.0.1; pending E2E testing setup.
           * See https://nextjs.org/docs/app/guides/testing/jest */}
-        <a href={"http://127.0.0.1:8000/image/" + id}>
+        <a href={"http://127.0.0.1:3000/image/" + id}>
           <NextJsImage
             className="thumbnail-img"
             src={src}
