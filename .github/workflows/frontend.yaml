@@ -31,5 +31,6 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     - run: npm ci
     - run: npm run test:gh-actions
+    - run: npx next build
     - run: npx playwright test
     - run: npx next lint
