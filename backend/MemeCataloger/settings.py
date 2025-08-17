@@ -104,7 +104,7 @@ DATABASES = {
 def is_cicd_env():
     # print("\n\n\n\n\n")
     cicd = os.getenv("CICD", "")
-    print("CICD environment variable:", cicd)
+    print("CICD environment variable:", cicd, flush=True)
     cicd = cicd.lower()
     if cicd == "true":
         return True
@@ -115,6 +115,8 @@ if 'test' in sys.argv or is_cicd_env():
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': str(Path(f'{BASE_DIR}/test_db/test.db'))
     }
+
+print("Using database:", DATABASES['default']['NAME'], flush=True)
 
 
 # Password validation
