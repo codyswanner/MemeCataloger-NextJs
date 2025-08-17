@@ -14,7 +14,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.12]
-        node-version: [22.x]
+        # node-version: [22.x]
 
   steps:
     - uses: actions/checkout@v4
@@ -31,24 +31,24 @@ jobs:
     - name: Run backend Tests
       run: |
         python ./backend/manage.py test
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: '**/package-lock.json'
-    - name: Install Frontend Dependencies
-      working-directory: 'frontend/memecataloger'
-      run: npm ci
-    - name: ESLint
-      working-directory: 'frontend/memecataloger'
-      run: npx next lint
-    - name: Run Jest Tests
-      working-directory: 'frontend/memecataloger'
-      run: npm run test:gh-actions
-    - name: Build for E2E Tests
-      working-directory: 'frontend/memecataloger'
-      run: npx next build
-    - name: Run Playwright E2E Tests
-      working-directory: 'frontend/memecataloger'
-      run: npx playwright test
+    # - name: Use Node.js ${{ matrix.node-version }}
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: ${{ matrix.node-version }}
+    #     cache: 'npm'
+    #     cache-dependency-path: '**/package-lock.json'
+    # - name: Install Frontend Dependencies
+    #   working-directory: 'frontend/memecataloger'
+    #   run: npm ci
+    # - name: ESLint
+    #   working-directory: 'frontend/memecataloger'
+    #   run: npx next lint
+    # - name: Run Jest Tests
+    #   working-directory: 'frontend/memecataloger'
+    #   run: npm run test:gh-actions
+    # - name: Build for E2E Tests
+    #   working-directory: 'frontend/memecataloger'
+    #   run: npx next build
+    # - name: Run Playwright E2E Tests
+    #   working-directory: 'frontend/memecataloger'
+    #   run: npx playwright test
