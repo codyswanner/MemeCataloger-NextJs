@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  CICD: "TRUE"
+  # CICD: "TRUE"
   DJANGO_SETTINGS_MODULE: "MemeCataloger.settings"
 
 jobs:
