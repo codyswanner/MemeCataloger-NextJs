@@ -35,7 +35,7 @@ jobs:
       run: |
         python ./backend/manage.py test
     - name: Start Backend Server
-      run: ENV=test python ./backend/manage.py runserver
+      run: python ./backend/manage.py runserver
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
