@@ -7,9 +7,6 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-env:
-  TEST: "True"
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,6 +31,7 @@ jobs:
     - name: Run backend Tests
       run: |
         python ./backend/manage.py test
+    - run: export TEST=True
     - name: Start Backend Server
       run: python ./backend/manage.py runserver
     - name: Use Node.js ${{ matrix.node-version }}
