@@ -102,8 +102,11 @@ DATABASES = {
 # Thanks StackOverflow user Sam Dolan for this suggestion!
 # https://stackoverflow.com/questions/4650509/different-db-for-testing-in-django
 def is_test_env():
+    print("\n\n\n\n\n")
+    print(os.getenv("TEST", False))
+    print("\n\n\n\n\n")
     return os.getenv("TEST", False)
-    
+
 if 'test' in sys.argv or is_test_env():
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
