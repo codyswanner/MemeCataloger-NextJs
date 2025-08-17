@@ -9,7 +9,7 @@ interface Image {
 
 export default async function ImageList() {
 
-  const response = await fetch('http://backend:8000/api/image/');
+  const response = await fetch('http://127.0.0.1:8000/api/image/');
   const imageList: Image[] = await response.json();
 
   return (
