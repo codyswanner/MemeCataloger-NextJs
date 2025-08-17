@@ -101,13 +101,13 @@ DATABASES = {
 # as the default one will not be available.
 # Thanks StackOverflow user Sam Dolan for this suggestion!
 # https://stackoverflow.com/questions/4650509/different-db-for-testing-in-django
-def is_test_env():
+def is_cicd_env():
     print("\n\n\n\n\n")
-    print(os.getenv("TEST", False))
+    print(os.getenv("CICD", False))
     print("\n\n\n\n\n")
-    return os.getenv("TEST", False)
+    return os.getenv("CICD", False)
 
-if 'test' in sys.argv or is_test_env():
+if 'test' in sys.argv or is_cicd_env():
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': str(Path(f'{BASE_DIR}/test_db/test.db'))

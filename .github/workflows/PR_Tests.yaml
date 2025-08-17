@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  TEST: "True"
+  CICD: "True"
 
 jobs:
   build:
