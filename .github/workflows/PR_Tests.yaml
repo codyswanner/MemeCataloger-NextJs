@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-# env:
-#   # CICD: "TRUE"
+env:
+  CICD: "TRUE"
 #   DJANGO_SETTINGS_MODULE: "MemeCataloger.settings"
 
 jobs:
@@ -39,9 +39,11 @@ jobs:
     - name: Ruff linter
       run: ruff check
     - name: Run backend Tests
+      working-directory: 'backend'
       run: |
         python ./backend/manage.py test
     - name: Start Backend Server
+      working-directory: 'backend'
       run: python ./backend/manage.py runserver
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
