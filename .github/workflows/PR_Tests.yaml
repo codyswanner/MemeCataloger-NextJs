@@ -7,6 +7,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  CICD: "This is a CI/CD environment variable for testing purposes."
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +20,12 @@ jobs:
         node-version: [22.x]
 
     steps:
+    - name: ENV CHECK
+      run: |
+        echo "Python version: ${{ matrix.python-version }}"
+        echo "Node.js version: ${{ matrix.node-version }}"
+        echo $CICD
+
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
