@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  CICD: "This is a CI/CD environment variable for testing purposes."
+  CICD: "TRUE"
 
 jobs:
   build:
