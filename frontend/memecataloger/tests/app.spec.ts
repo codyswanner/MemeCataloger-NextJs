@@ -8,12 +8,17 @@ test('has title', async ({ page }) => {
   await expect(page).toHaveTitle(/MemeCataloger/);
 });
 
-test('four thumbnails visible', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000');
+/* 
+ * This is a flakey test that assumes a particular setup,
+ * which will certainly not be the case in the GitHub runner.
+ * Will set up some proper test data later for this,
+ * or change the test to be more flexible. */
+// test('four thumbnails visible', async ({ page }) => {
+//   await page.goto('http://127.0.0.1:3000');
 
-  await expect(page.getByRole('link')).toHaveCount(4);
+//   await expect(page.getByRole('link')).toHaveCount(4);
 
-});
+// });
 
 
 

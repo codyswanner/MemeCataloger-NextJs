@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import Thumbnail from './Thumbnail';
 import './ImageList.css';
 
@@ -11,9 +9,8 @@ interface Image {
 
 export default async function ImageList() {
 
-  axios.defaults.baseURL = 'http://backend:8000';
-  const response = await axios.get('/api/image/');
-  const imageList: Image[] = response.data;
+  const response = await fetch('http://backend:8000/api/image/');
+  const imageList: Image[] = await response.json();
 
   return (
     <div className='image-grid-container'>
