@@ -11,7 +11,7 @@ interface Image {
 
 export default async function ImageList() {
 
-  axios.defaults.baseURL = 'http://backend:8000';
+  axios.defaults.baseURL = 'http://127.0.0.1:8000';
   const response = await axios.get('/api/image/');
   const imageList: Image[] = response.data;
 
