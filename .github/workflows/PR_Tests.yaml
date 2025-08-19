@@ -9,7 +9,6 @@ on:
 
 env:
   CICD: "TRUE"
-  DJANGO_SETTINGS_MODULE: "MemeCataloger.settings"
 
 jobs:
   build:
