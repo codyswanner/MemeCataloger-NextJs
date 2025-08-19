@@ -11,7 +11,7 @@ env:
   TEST: True
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -35,7 +35,11 @@ jobs:
       run: |
         python ./backend/manage.py test
     - name: Start Backend Server
-      run: python ./backend/manage.py runserver
+      uses: JarvusInnovations/background-action@v1
+      with:
+        run: python ./backend/manage.py runserver
+        wait-on: http://127.0.0.1:8000/api/image/
+        wait-for: 2m
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
