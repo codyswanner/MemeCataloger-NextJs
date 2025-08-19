@@ -32,13 +32,13 @@ jobs:
     - name: Ruff linter
       run: ruff check
     - name: Run backend Tests
-      working-directory: '/backend'
+      working-directory: 'backend/'
       run: |
         python manage.py test
     - name: Start Backend Server
       uses: JarvusInnovations/background-action@v1
       with:
-        working-directory: '/backend'
+        working-directory: 'backend/'
         run: |
           echo "Got to the run stanza!"
           python manage.py runserver 0.0.0.0:8000
