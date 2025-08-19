@@ -103,7 +103,7 @@ DATABASES = {
 # https://stackoverflow.com/questions/4650509/different-db-for-testing-in-django
 def is_cicd_env():
     # print("\n\n\n\n\n")
-    cicd = os.getenv("CICD", "")
+    cicd = os.getenv("CICD")
     print("CICD environment variable:", cicd)
     cicd = cicd.lower()
     if cicd == "true":
