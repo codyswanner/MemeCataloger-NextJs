@@ -19,6 +19,8 @@ COPY . /home/front-runner/
 WORKDIR /home/front-runner/memecataloger
 
 RUN npm install
+RUN npx playwright install --with-deps chromium
+RUN npx playwright install --with-deps firefox
 
 # USER front-runner
 CMD ["bash", "-c", "npm run dev"]
