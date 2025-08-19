@@ -102,9 +102,9 @@ DATABASES = {
 # Thanks StackOverflow user Sam Dolan for this suggestion!
 # https://stackoverflow.com/questions/4650509/different-db-for-testing-in-django
 def is_cicd_env():
-    # print("\n\n\n\n\n")
+    print("\n\n\n\n\n")
     print(os.getenv("CICD", False))
-    # print("\n\n\n\n\n")
+    print("\n\n\n\n\n")
     return os.getenv("CICD", False)
 
 if 'test' in sys.argv or is_cicd_env():
