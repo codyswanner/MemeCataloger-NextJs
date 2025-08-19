@@ -32,13 +32,17 @@ jobs:
     - name: Ruff linter
       run: ruff check
     - name: Run backend Tests
+      working-directory: '/backend'
       run: |
-        python ./backend/manage.py test
+        python manage.py test
     - name: Start Backend Server
       uses: JarvusInnovations/background-action@v1
       with:
+        working-directory: '/backend'
         run: |
-          python ./backend/manage.py runserver 0.0.0.0:8000
+          echo "Got to the run stanza!"
+          python manage.py runserver 0.0.0.0:8000
+          echo "Got past the python call!"
         wait-on: http://127.0.0.1:8000/api/image/
         wait-for: 2m
     - name: Use Node.js ${{ matrix.node-version }}
