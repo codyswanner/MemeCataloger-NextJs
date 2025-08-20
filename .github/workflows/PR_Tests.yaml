@@ -53,7 +53,10 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     - name: Install Frontend Dependencies
       working-directory: 'frontend/memecataloger'
-      run: npm ci
+      run: |
+        npm ci &
+        npx playwright install --with-deps chromium
+        npx playwright install --with-deps firefox
     - name: ESLint
       working-directory: 'frontend/memecataloger'
       run: npx next lint
