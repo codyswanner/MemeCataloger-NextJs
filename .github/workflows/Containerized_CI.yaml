@@ -69,6 +69,8 @@ jobs:
         username: codyswanner
         password: ${{ secrets.docker_token }}
       options: --user root
+      volumes:
+        - ./frontend/memecataloger:/home/front-runner/memecataloger
     steps:
     - uses: actions/checkout@v4
     - name: ESLint
