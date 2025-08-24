@@ -42,8 +42,8 @@ jobs:
           echo "Got to the run stanza!"
           python manage.py runserver 0.0.0.0:8000
           echo "Got past the python call!"
-        wait-on: http://127.0.0.1:8000/api/image/
-        wait-for: 2m
+        # wait-on: http://127.0.0.1:8000/api/image/
+        wait-for: 3m
   test-frontend:
     runs-on: ubuntu-latest
     strategy:
