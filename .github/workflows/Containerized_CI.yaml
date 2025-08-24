@@ -58,7 +58,7 @@ jobs:
       options: --user root
     steps:
     - name: Wait for backend
-      uses: iFaxity/wait-on-action
+      uses: iFaxity/wait-on-action@v1.2.1
       with:
         resource: http://backend:8000/api/image/
     - name: ESLint
