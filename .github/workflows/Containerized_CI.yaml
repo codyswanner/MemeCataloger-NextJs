@@ -18,7 +18,7 @@ jobs:
       image: codyswanner/memecataloger-nextjs:backend-25.08.0
       credentials:
         username: codyswanner
-        password: ${{ secret.docker_token }}
+        password: ${{ secrets.docker_token }}
       env:
         CICD: True
       ports:
