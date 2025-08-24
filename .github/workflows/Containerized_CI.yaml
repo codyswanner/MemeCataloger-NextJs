@@ -19,6 +19,7 @@ jobs:
       credentials:
         username: codyswanner
         password: ${{ secrets.docker_token }}
+      options: --user root
       env:
         CICD: True
       ports:
@@ -54,6 +55,7 @@ jobs:
       credentials:
         username: codyswanner
         password: ${{ secrets.docker_token }}
+      options: --user root
     steps:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
