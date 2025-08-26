@@ -1,0 +1,40 @@
+name: Pull Request Automated Testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.12]
+        node-version: [22.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up containers
+      run: docker compose up
+    - name: Attach Backend
+      run: docker exec -it memecataloger-nextjs-backend-1 bash
+    - name: Ruff linter
+      run: python -m ruff check
+    - name: Run Backend Tests
+      run: python manage.py test
+    - name: Detach Backend
+      run: exit
+    - name: Attach Frontend
+      run: docker exec -it memecataloger-nextjs-frontend-1 bash
+    - name: ESLint
+      run: npx next lint
+    - name: Run Jest Tests
+      run: npm run test:gh-actions
+    - name: Build for E2E Tests
+      run: npx next build
+    - name: Run Playwright E2E Tests
+      run: npx playwright test
