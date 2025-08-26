@@ -18,6 +18,10 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+    - name: Initialize Secrets
+      run: |
+        printf '%s' '${{ secrets.DJANGO_DB_PW }}' >> django-db-pw.txt
+        printf '%s' '${{ secrets.DB_PW }}' >> db-pw.txt
     - name: Set up containers
       run: docker compose up
     - name: Attach Backend
