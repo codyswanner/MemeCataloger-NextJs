@@ -33,7 +33,7 @@
 # # Expose the port that the application listens on
 # EXPOSE 8000
 
-FROM codyswanner/memecataloger-nextjs:backend-25.08.0
+FROM codyswanner/memecataloger-nextjs:backend-25.08.1
 
 # Make migrations to the database
 RUN python manage.py makemigrations

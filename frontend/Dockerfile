@@ -22,7 +22,7 @@
 # RUN npx playwright install --with-deps chromium
 # RUN npx playwright install --with-deps firefox
 
-FROM codyswanner/memecataloger-nextjs:frontend-25.08.0
+FROM codyswanner/memecataloger-nextjs:frontend-25.08.1
 
 # USER front-runner
 CMD ["bash", "-c", "npm run dev"]
