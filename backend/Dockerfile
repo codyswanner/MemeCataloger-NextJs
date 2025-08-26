@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Create a non-privileged user to run the app
 RUN addgroup --gid 987 docker
-ARG UID=10001
+ARG UID=1001
 RUN useradd -m --uid "${UID}" --gid 987 django-server
 
 # Copy source code into the container

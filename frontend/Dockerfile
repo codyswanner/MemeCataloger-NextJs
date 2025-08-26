@@ -5,7 +5,7 @@ RUN apt-get update \
 	&& apt-get install -y sudo gcc pkg-config
 
 # Create a non-privileged user to run processes
-ARG UID=10001
+ARG UID=1001
 RUN useradd -m --uid "${UID}" front-runner
 RUN usermod -aG sudo front-runner
 
