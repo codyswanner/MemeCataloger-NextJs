@@ -23,7 +23,7 @@ jobs:
         printf '%s' '${{ secrets.DJANGO_DB_PW }}' >> django-db-pw.txt
         printf '%s' '${{ secrets.DB_PW }}' >> db-pw.txt
     - name: Set up containers
-      run: docker compose up
+      run: docker compose up -d
     - name: Attach Backend
       run: docker exec -it memecataloger-nextjs-backend-1 bash
     - name: Ruff linter
