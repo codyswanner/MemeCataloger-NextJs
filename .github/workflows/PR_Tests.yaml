@@ -41,7 +41,7 @@ jobs:
         --volume ./frontend/memecataloger:/home/front-runner/memecataloger \
         --network memecataloger-nextjs_default \
         codyswanner/memecataloger-nextjs:frontend-25.08.1 \
-        npx next build
+        npm install && npx next build
     
     - name: Run Playwright E2E Tests
       run: |
