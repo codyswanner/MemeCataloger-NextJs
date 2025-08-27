@@ -31,9 +31,9 @@ jobs:
       run: |
         docker exec memecataloger-nextjs-backend-1 python manage.py test
     - name: ESLint
-      run: docker exec memecataloger-nextjs-frontend-1 npx next lint
+      run: docker run memecataloger-nextjs-frontend-1 npx next lint
     - name: Run Jest Tests
       run: |
-        docker exec memecataloger-nextjs-frontend-1 npm run test:gh-actions
+        docker run memecataloger-nextjs-frontend-1 npm run test:gh-actions
     - name: Run Playwright E2E Tests
-      run: docker exec memecataloger-nextjs-frontend-1 npx playwright test
+      run: docker run memecataloger-nextjs-frontend-1 npx playwright test
