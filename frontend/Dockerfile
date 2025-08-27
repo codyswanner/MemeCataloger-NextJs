@@ -25,4 +25,4 @@
 FROM codyswanner/memecataloger-nextjs:frontend-25.08.1
 
 # USER front-runner
-CMD ["bash", "-c", "npm run dev"]
+CMD ["bash", "-c", "npm run dev; tail -f /dev/null"]
