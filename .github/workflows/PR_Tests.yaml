@@ -24,8 +24,6 @@ jobs:
         printf '%s' '${{ secrets.DB_PW }}' >> db-pw.txt
     - name: Set up containers
       run: docker compose up -d
-    - name: Build for E2E Testing
-      run: docker exec memecataloger-nextjs-frontend-1 npx next build
     - name: Ruff Linter
       run: |
         docker exec memecataloger-nextjs-backend-1 python -m ruff check
