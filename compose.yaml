@@ -13,6 +13,7 @@ services:
       MYSQL_PASSWORD_FILE: /run/secrets/django-db-pw
     volumes:
       - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
