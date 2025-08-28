@@ -7,7 +7,7 @@ services:
       - db-root-pw
       - django-db-pw
     environment:
-      MYSQL_ROOT_PASSWORD: /run/secrets/db-root-pw
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-root-pw
       MYSQL_DATABASE: memecataloger
       MYSQL_USER: django
       MYSQL_PASSWORD_FILE: /run/secrets/django-db-pw
