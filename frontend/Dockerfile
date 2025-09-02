@@ -1,5 +1,5 @@
 # See build steps below
-FROM codyswanner/memecataloger-nextjs:frontend-25.08.1
+FROM codyswanner/memecataloger-nextjs:frontend-25.09.1
 
 # Run server and ensure container stays open
 CMD ["bash", "-c", "npm run dev; tail -f /dev/null"]
