@@ -17,7 +17,7 @@ const jestConfig: Config = {
   // automock: false,
 
   // Stop running tests after `n` failures
-  // bail: 0,
+  bail: 2,
 
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/tmp/jest_0",
@@ -135,9 +135,9 @@ const jestConfig: Config = {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: [
+    "<rootDir>/src/component-tests/"
+  ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
@@ -170,12 +170,13 @@ const jestConfig: Config = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/e2e-tests/"
+  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  // testRegex: [],
+  testRegex: ["\.(test|jest)\.(js|ts)$"],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
