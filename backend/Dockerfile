@@ -1,5 +1,5 @@
 # See build steps below
-FROM codyswanner/memecataloger-nextjs:backend-25.08.1
+FROM codyswanner/memecataloger-nextjs:backend-25.09.1
 
 # Make migrations to the database
 RUN python manage.py makemigrations
