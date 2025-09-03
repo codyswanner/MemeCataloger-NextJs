@@ -1,0 +1,41 @@
+name: Pull Request Automated Testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.12]
+        node-version: [22.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Initialize Secrets
+      run: |
+        printf '%s' '${{ secrets.DJANGO_DB_PW }}' >> django-db-pw.txt
+        printf '%s' '${{ secrets.DB_PW }}' >> db-pw.txt
+    - name: Set up containers
+      run: docker compose up -d
+    - name: Ruff Linter
+      run: |
+        docker exec memecataloger-nextjs-backend-1 python -m ruff check
+    - name: Run Backend Tests
+      run: |
+        docker exec memecataloger-nextjs-backend-1 python manage.py test
+    - name: ESLint
+      run: docker exec memecataloger-nextjs-frontend-1 npx next lint
+    - name: Run Jest Tests
+      run: |
+        docker exec memecataloger-nextjs-frontend-1 npm run test:gh-actions
+    - name: Build for E2E Testing
+      run: docker exec memecataloger-nextjs-frontend-1 npx next build
+    - name: Run Playwright E2E Tests
+      run: docker exec memecataloger-nextjs-frontend-1 npx playwright test
