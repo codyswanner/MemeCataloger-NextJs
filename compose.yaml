@@ -7,12 +7,13 @@ services:
       - db-root-pw
       - django-db-pw
     environment:
-      MYSQL_ROOT_PASSWORD: /run/secrets/db-root-pw
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-root-pw
       MYSQL_DATABASE: memecataloger
       MYSQL_USER: django
       MYSQL_PASSWORD_FILE: /run/secrets/django-db-pw
     volumes:
       - db-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
