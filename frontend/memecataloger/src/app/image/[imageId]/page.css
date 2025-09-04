@@ -1,0 +1,17 @@
+.image-display {
+  display: block;
+  margin: auto;
+  /* Thanks to StackOverflow user setec!
+   * https://stackoverflow.com/questions/12991351/how-to-force-image-resize-and-keep-aspect-ratio
+   */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.image-container {
+  vertical-align: middle;
+  height: 65vh;
+  margin: auto;
+}

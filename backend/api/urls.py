@@ -8,12 +8,15 @@ The following URLs provide API-delivered data:
 """
 
 from django.urls import path
-from .views import AppUserView, ImageView, TagView, ImageTagView
+from .views import AppUserListView, ImageListView, TagListView, ImageTagListView
+from .views import user_view, image_view
 
 app_name = 'api'
 urlpatterns = [
-    path('user/', AppUserView.as_view()),
-    path('image/', ImageView.as_view()),
-    path('tag/', TagView.as_view()),
-    path('image-tag/', ImageTagView.as_view())
+    path('user/', AppUserListView.as_view()),
+    path('user/<uuid:user_id>', user_view),
+    path('image/', ImageListView.as_view()),
+    path('image/<uuid:image_id>', image_view),
+    path('tag/', TagListView.as_view()),
+    path('image-tag/', ImageTagListView.as_view())
 ]

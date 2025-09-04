@@ -4,7 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: ['localhost', '127.0.0.1'],
   images: {
-    remotePatterns: [new URL('http://backend:8000/media/**')]
+    remotePatterns: [
+      new URL('http://backend:8000/media/**'),
+      new URL('http://backend:8000/api/image/**')
+    ]
   }
 };
 
