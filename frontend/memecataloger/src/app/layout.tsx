@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals.css"
+
+import Header from "./header";
 
 
 export const metadata: Metadata = {
@@ -18,8 +20,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.jpg" />
       </head>
       <body>
-        {children}
+          <Header />
+          {children}
       </body>
     </html>
   );
-}
+};

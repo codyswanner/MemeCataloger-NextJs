@@ -11,5 +11,6 @@
   aspect-ratio: 1/1;
   width: 98%;
   overflow: hidden;
-  margin: .5vh
+  margin: .5vh;
+  z-index: 0;
 }

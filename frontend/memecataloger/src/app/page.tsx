@@ -8,7 +8,6 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <ImageList/>
-        {/* <Thumbnail src="/20201109_113624.jpg" id={1}/> */}
       </main>
     </div>
   );

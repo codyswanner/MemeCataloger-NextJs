@@ -1,0 +1,21 @@
+.headerOuterDiv{
+  position: relative;
+}
+
+.headerInnerDiv {
+  position: fixed;
+  background-color: blue;
+  width: 110vw;
+  height: 10vh;
+  margin: 0;
+  overflow: scroll;
+  justify-content: center;
+  align-content: center;
+  z-index: 1;
+}
+
+.headerTitle {
+  position: relative;
+  font-size: medium;
+  margin: 0 auto 0 2vw;
+}
