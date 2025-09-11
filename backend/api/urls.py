@@ -10,8 +10,8 @@ The following URLs provide API-delivered data:
 from django.urls import path
 from .views import AppUserListView, ImageListView, TagListView, ImageTagListView
 from .views import user_view, image_view
-from .views import update_existing_tag_view, new_tag_view
-from .views import update_existing_imagetag_view, new_imagetag_view
+from .views import existing_tag_view, new_tag_view
+from .views import existing_imagetag_view, new_imagetag_view
 
 app_name = 'api'
 urlpatterns = [
@@ -20,9 +20,9 @@ urlpatterns = [
     path('image/', ImageListView.as_view()),
     path('image/<uuid:image_id>', image_view),
     path('tag/', TagListView.as_view()),
-    path('tag/<uuid:tag_id>', update_existing_tag_view),
+    path('tag/<uuid:tag_id>', existing_tag_view),
     path('tag/new', new_tag_view),
     path('image-tag/', ImageTagListView.as_view()),
-    path('image-tag/<uuid:imagetag_id>', update_existing_imagetag_view),
+    path('image-tag/<uuid:imagetag_id>', existing_imagetag_view),
     path('image-tag/new', new_imagetag_view)
 ]

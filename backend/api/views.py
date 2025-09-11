@@ -86,3 +86,19 @@ def image_view(_, **image_id):
         requested_image.source,
         content_type="image/png"
     )
+
+def existing_tag_view(request, tag_id):
+    ...
+    return HttpResponse(status=503)
+
+def new_tag_view(request):
+    ...
+    return HttpResponse(status=503)
+
+def existing_imagetag_view(request, imagetag_id):
+    ...
+    return HttpResponse(status=503)
+
+def new_imagetag_view(request):
+    ...
+    return HttpResponse(status=503)
