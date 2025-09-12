@@ -110,5 +110,6 @@ class ImageTag(models.Model):
     tag_id: Tag
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
     tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
