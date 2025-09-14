@@ -12,6 +12,7 @@ Classes
 """
 
 import json
+from uuid import UUID
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .models import AppUser, Image, Tag, ImageTag
@@ -166,9 +167,61 @@ def existing_tag_view(request, tag_id) -> HttpResponse:
         content=json.dumps(response_data)
     )
 
-def new_tag_view(request):
+def new_tag_view(request) -> HttpResponse:
+    """Handles requests to create a new Tag object.
+    Accepts the following methods:
+
+    GET: return required details for creating a new Tag object.
+    POST: create a new Tag object with given tag-name and owner by user-id.
+    """
+
+    # validate method is GET or POST
+    if request.method not in ["GET", "POST"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or POST method."
+        )
+
+    # validate user is signed in, and request user-id matches
     ...
-    return HttpResponse(status=503)
+
+    # respond to GET requests with details required to create Tag object
+    if request.method == "GET":
+        return HttpResponse(
+            "Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  tag-name: string name to give specified tag" \
+            "}"
+        )
+    
+    # validate request is properly formed
+    try:
+        tag_name:str = request.POST['tag-name']
+        user_id: UUID = request.POST['user-id']
+        requesting_user: AppUser = AppUser.objects.get(id=user_id)
+    except (KeyError, AppUser.DoesNotExist):
+        return HttpResponse(
+            status=400,
+            content="Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  tag-name: string name to give specified tag" \
+            "}"
+        )
+    
+    # if passed all checks, create Tag as specified
+    new_tag: Tag = Tag.objects.create(owner=requesting_user, name=tag_name)
+    new_tag.save()
+    response_data = {
+        "tag-id": f"{new_tag.id}",
+        "tag-name": new_tag.name
+    }
+
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
 
 def existing_imagetag_view(request, imagetag_id):
     ...

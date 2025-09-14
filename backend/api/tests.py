@@ -512,3 +512,93 @@ class ExistingTagViewTestCase(TestCase):
     response = client.put(target_url, json.dumps(put_request_data))
     self.assertEqual(response.status_code, 200)
     self.assertEqual(json.loads(response.content), expected_response)
+
+
+class NewTagViewTestCase(TestCase):
+  """Tests the new_tag_view, including GET and POST methods.
+  GET: return required details for creating a new Tag object.
+  POST: create a new Tag object with given tag-name and owner by user-id.
+  """
+
+  @classmethod
+  def setUpTestData(cls) -> None:
+    cls.test_user: AppUser = AppUser.objects.create(username="test_user_1")
+  
+  def setUp(self):
+    # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
+    self.client = Client()
+  
+  def test_validate_accepted_method(self):
+    client: Client = self.client
+    target_url: str = "/api/tag/new"
+    
+    # status OK on GET requests
+    response = client.get(target_url)
+    self.assertEqual(response.status_code, 200)
+    
+    # status OK on POST requests
+    post_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 200)
+
+    # error 405 on other requests
+    expected_message: bytes = \
+      b"This resource requires GET or POST method."
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+    response = client.patch(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+  
+  def test_user_auth(self):
+    ...
+  
+  def test_reject_malformed_request(self):
+    client: Client = self.client
+    
+    target_url: str = "/api/tag/new"
+    post_request_data: dict = {
+      "some-data": "random",
+      "matches-requirements": "false"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 400)
+  
+  def test_respond_to_GET_request(self):
+    client: Client = self.client
+    target_url: str = "/api/tag/new"
+    
+    response = client.get(target_url)
+    expected_data: bytes = \
+      b"Requires POST request with data:" \
+      b"{" \
+      b"  user-id: uuid of resource owner," \
+      b"  tag-name: string name to give specified tag" \
+      b"}"
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.content, expected_data)
+  
+  def test_responsd_to_POST_request(self):
+    client: Client = self.client
+    target_url: str = "/api/tag/new"
+
+    post_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    uuid_regex: str = \
+      r'[0-9a-fA-F]{8}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{12}'
+    expected_name: str = "new_test_tag_name"
+    response = client.post(target_url, post_request_data)
+    response_data = json.loads(response.content)
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response_data['tag-name'], expected_name)
+    self.assertRegex(response_data['tag-id'], uuid_regex)
