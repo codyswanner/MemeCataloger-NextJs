@@ -11,7 +11,7 @@ Classes
 
 """
 
-# from django.http import HttpResponse
+import json
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .models import AppUser, Image, Tag, ImageTag
@@ -72,14 +72,14 @@ class ImageTagListView(generics.ListAPIView):
     renderer_classes = [JSONRenderer]
 
 
-def user_view(_, **user_id):
+def user_view(_, **user_id) -> HttpResponse:
     return HttpResponse(
         "<div>You landed on the user view!</div>"
         f"<div>The user id is: {user_id}</div>"
         "<div>This page hasn't really been implemented for anything yet.</div>"
     )
 
-def image_view(_, **image_id):
+def image_view(_, **image_id) -> HttpResponse:
     requested_image: Image = Image.objects.get(id=image_id['image_id'])
 
     return HttpResponse(
@@ -87,9 +87,84 @@ def image_view(_, **image_id):
         content_type="image/png"
     )
 
-def existing_tag_view(request, tag_id):
+def existing_tag_view(request, tag_id) -> HttpResponse:
+    """Handles requests meant to manipulate existing Tag objects.
+    Accepts the following methods:
+
+    GET: return details of the Tag object specified by request.tag_id.
+    POST: update the name of the Tag object specified by request.tag_id.
+    DELETE: deletes the Tag object specified by request.tag_id.
+
+    request.tag_id is supplied by a matching pattern in the URL;
+    see api.urls module and https://docs.djangoproject.com/en/5.2/topics/http/urls/
+    for more information.
+    """
+
+    # validate that request is either GET, PUT or DELETE
+    if request.method not in ["GET", "PUT", "DELETE"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET, PUT or DELETE method."
+        )
+    
+    # validate user is signed in, and request user-id matches
     ...
-    return HttpResponse(status=503)
+
+    # validate user owns specified resource
+    ...
+
+    # respond to GET requests with details of Tag object
+    if request.method == "GET":
+        try:
+            target_tag: Tag = Tag.objects.get(id=tag_id)
+            response_data = {
+                "tag-id": f"{target_tag.id}",
+                "tag-name": f"{target_tag.name}",
+                "tag-owner": f"{target_tag.owner.id}"
+            }
+            return HttpResponse(
+                status=200,
+                content=json.dumps(response_data)
+            )
+        except Tag.DoesNotExist:
+            return HttpResponse(status=400)
+
+    # carry out DELETE requests and confirm to client
+    if request.method == "DELETE":
+        # validate request properly formed
+        try:
+            target_tag: Tag = Tag.objects.get(id=tag_id)
+        except Tag.DoesNotExist:
+            return HttpResponse(status=400)
+
+        # carry out deletion
+        target_tag.delete()
+        response_data: dict = {"tag-id": f"{tag_id}"}
+        return HttpResponse(
+            status=200,
+            content=json.dumps(response_data)
+        )
+
+    # validate PUT request is properly formed
+    try:
+        target_tag: Tag = Tag.objects.get(id=tag_id)
+        request_data = json.loads(request.body)
+        new_tag_name: str = request_data['tag-name']
+    except (Tag.DoesNotExist, KeyError):
+        return HttpResponse(status=400)
+
+    # update tag name as specified
+    target_tag.name = new_tag_name
+    target_tag.save()
+    response_data = {
+        "tag-id": f"{tag_id}",
+        "tag-name": f"{target_tag.name}"
+    }
+
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
 
 def new_tag_view(request):
     ...

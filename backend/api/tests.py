@@ -9,6 +9,7 @@ Intentionally excludes the following modules:
 
 from django.test import Client, TestCase
 import re
+import json
 from .models import AppUser, Image, Tag, ImageTag
 from django.db.utils import IntegrityError
 from django.conf import settings
@@ -384,3 +385,130 @@ class UrlImageTestCase(TestCase):
     b'2003c078000100c28064000a24b0e52a0002000000004600'
     # content of the page should simply be the test image
     self.assertEqual(expected_response, self.response.content)
+
+
+"""Tests for views.py"""
+
+class ExistingTagViewTestCase(TestCase):
+  """Tests the existing_tag_view, including GET, PUT, and DELETE methods.
+  GET: return details of the Tag object specified by request.tag_id.
+  PUT: update the name of the Tag object specified by request.tag_id.
+  DELETE: deletes the Tag object specified by request.tag_id.
+  """
+
+  @classmethod
+  def setUpTestData(cls) -> None:
+    cls.test_user: AppUser = AppUser.objects.create(username="test_user_1")
+    cls.test_tag: Tag = Tag.objects.create(
+      name="test_tag",
+      owner=cls.test_user
+    )
+  
+  def setUp(self):
+    # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
+    self.client = Client()
+
+  def test_validate_accepted_method(self):
+    
+    client: Client = self.client
+    target_url: str = f"/api/tag/{self.test_tag.id}"
+    
+    # status OK on GET requests
+    response = client.get(target_url)
+    self.assertEqual(response.status_code, 200)
+    
+    # status OK on PUT requests
+    put_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    response = client.put(target_url, json.dumps(put_request_data))
+    self.assertEqual(response.status_code, 200)
+
+    # status OK on DELETE requests
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 200)
+
+    # error 405 on other requests
+    expected_message: bytes = \
+      b"This resource requires GET, PUT or DELETE method."
+    post_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+    response = client.patch(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+
+  def test_user_auth(self):
+    ...
+  
+  def test_user_ownership(self):
+    ...
+  
+  def test_reject_malformed_request(self):
+    client: Client = self.client
+    
+    # Case 1: improper PUT data
+    target_url: str = f"/api/tag/{self.test_tag.id}"
+    put_request_data: dict = {
+      "some-data": "random",
+      "matches-requirements": "false"
+    }
+    response = client.put(target_url, json.dumps(put_request_data))
+    self.assertEqual(response.status_code, 400)
+
+    # Case 2: request on non-existent tag
+    # use a random valid UUID to match URL pattern
+    target_url: str = "/api/tag/31b4354d-9dcb-40bc-8230-8b83bd8ff863"
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 400)
+    # using valid PUT data
+    put_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    response = client.put(target_url, json.dumps(put_request_data))
+    self.assertEqual(response.status_code, 400)
+  
+  def test_respond_to_GET_request(self):
+    client: Client = self.client
+    target_url: str = f"/api/tag/{self.test_tag.id}"
+    
+    response = client.get(target_url)
+    expected_data: dict = {
+      'tag-id': f"{self.test_tag.id}",
+      'tag-name': f"{self.test_tag.name}",
+      'tag-owner': f"{self.test_user.id}"
+    }
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(json.loads(response.content), expected_data)
+
+  def test_respond_to_DELETE_request(self):
+    client: Client = self.client
+    target_url: str = f"/api/tag/{self.test_tag.id}"
+
+    expected_response = { "tag-id": f"{self.test_tag.id}" }
+    response = client.delete(target_url)
+    response_data = json.loads(response.content)
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response_data, expected_response)
+  
+  def test_responsd_to_PUT_request(self):
+    client: Client = self.client
+    target_url: str = f"/api/tag/{self.test_tag.id}"
+
+    put_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-name": "new_test_tag_name"
+    }
+    expected_response: dict = {
+        "tag-id": f"{self.test_tag.id}",
+        "tag-name": "new_test_tag_name"
+    }
+    response = client.put(target_url, json.dumps(put_request_data))
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(json.loads(response.content), expected_response)
