@@ -705,22 +705,96 @@ class NewImageTagViewTestCase(TestCase):
       name="test_tag",
       owner=cls.test_user
     )
+    cls.test_user_2: AppUser = AppUser.objects.create(username="other_user")
   
   def setUp(self):
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
     self.client = Client()
 
   def test_validate_accepted_method(self):
-    ...
+    client: Client = self.client
+    target_url: str = "/api/image-tag/new"
+    
+    # status OK on GET requests
+    response = client.get(target_url)
+    self.assertEqual(response.status_code, 200)
+    
+    # status OK on POST requests
+    post_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-id": f"{self.test_tag.id}",
+      "image-id": f"{self.test_image.id}"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 200)
+
+    # error 405 on other requests
+    expected_message: bytes = \
+      b"This resource requires GET or POST method."
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+    response = client.patch(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
 
   def test_user_auth(self):
     ...
 
+  def test_user_ownership(self):
+    client: Client = self.client
+    target_url: str = "/api/image-tag/new"
+
+    post_request_data: dict = {
+      "user-id": f"{self.test_user_2.id}",  # non-owner user
+      "tag-id": f"{self.test_tag.id}",
+      "image-id": f"{self.test_image.id}"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 403)
+
   def test_reject_malformed_request(self):
-    ...
+    client: Client = self.client
+    
+    target_url: str = "/api/image-tag/new"
+    post_request_data: dict = {
+      "some-data": "random",
+      "matches-requirements": "false"
+    }
+    response = client.post(target_url, post_request_data)
+    self.assertEqual(response.status_code, 400)
 
   def test_respond_to_GET_request(self):
-    ...
+    client: Client = self.client
+    target_url: str = "/api/image-tag/new"
+    
+    response = client.get(target_url)
+    expected_data: bytes = \
+      b"Requires POST request with data:" \
+      b"{" \
+      b"  user-id: uuid of resource owner," \
+      b"  image-id: uuid of image to apply tag," \
+      b"  tag-id: uuid of tag to apply to image" \
+      b"}"
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.content, expected_data)
 
   def test_respond_to_POST_request(self):
-    ...
+    client: Client = self.client
+    target_url: str = "/api/image-tag/new"
+
+    post_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-id": f"{self.test_tag.id}",
+      "image-id": f"{self.test_image.id}"
+    }
+    uuid_regex: str = \
+      r'[0-9a-fA-F]{8}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{4}\-' \
+      r'[0-9a-fA-F]{12}'
+    response = client.post(target_url, post_request_data)
+    response_data = json.loads(response.content)
+    self.assertEqual(response.status_code, 200)
+    self.assertRegex(response_data['imagetag-id'], uuid_regex)
