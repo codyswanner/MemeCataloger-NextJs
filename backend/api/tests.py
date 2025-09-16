@@ -380,11 +380,11 @@ class UrlImageTestCase(TestCase):
   def test_expected_content(self):
     # this is the bytestring representing the image;
     # see the setUpTestData function
-    expected_response: bytes = b'52494646be000000574542505' \
+    expected_data: bytes = b'52494646be000000574542505' \
     b'650384c0d0a0055000000c4401e320500000070bf17f57c9f041' \
     b'2003c078000100c28064000a24b0e52a0002000000004600'
     # content of the page should simply be the test image
-    self.assertEqual(expected_response, self.response.content)
+    self.assertEqual(expected_data, self.response.content)
 
 
 """Tests for views.py"""
@@ -491,11 +491,11 @@ class ExistingTagViewTestCase(TestCase):
     client: Client = self.client
     target_url: str = f"/api/tag/{self.test_tag.id}"
 
-    expected_response = { "tag-id": f"{self.test_tag.id}" }
+    expected_data = { "tag-id": f"{self.test_tag.id}" }
     response = client.delete(target_url)
     response_data = json.loads(response.content)
     self.assertEqual(response.status_code, 200)
-    self.assertEqual(response_data, expected_response)
+    self.assertEqual(response_data, expected_data)
   
   def test_responsd_to_PUT_request(self):
     client: Client = self.client
@@ -505,13 +505,13 @@ class ExistingTagViewTestCase(TestCase):
       "user-id": f"{self.test_user.id}",
       "tag-name": "new_test_tag_name"
     }
-    expected_response: dict = {
+    expected_data: dict = {
         "tag-id": f"{self.test_tag.id}",
         "tag-name": "new_test_tag_name"
     }
     response = client.put(target_url, json.dumps(put_request_data))
     self.assertEqual(response.status_code, 200)
-    self.assertEqual(json.loads(response.content), expected_response)
+    self.assertEqual(json.loads(response.content), expected_data)
 
 
 class NewTagViewTestCase(TestCase):
@@ -602,3 +602,125 @@ class NewTagViewTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data['tag-name'], expected_name)
     self.assertRegex(response_data['tag-id'], uuid_regex)
+
+
+class ExistingImageTagViewTestCase(TestCase):
+  """Tests the existing_imagetag_view, including GET and DELETE methods.
+  GET: return details of the ImageTag object noted by request.imagetag_id.
+  DELETE: delete the ImageTag object noted by request.imagetag_id.
+  """
+
+  @classmethod
+  def setUpTestData(cls) -> None:
+    cls.test_user: AppUser = AppUser.objects.create(username="test_user_1")
+    cls.test_image: Image = Image.objects.create(
+      source="test.png",
+      owner=cls.test_user,
+      description="this is the test image description"
+    )
+    cls.test_tag: Tag = Tag.objects.create(
+      name="test_tag",
+      owner=cls.test_user
+    )
+    cls.test_imagetag: ImageTag = ImageTag.objects.create(
+      image_id=cls.test_image,
+      tag_id=cls.test_tag
+    )
+  
+  def setUp(self):
+    # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
+    self.client = Client()
+
+  def test_validate_accepted_method(self):
+    client: Client = self.client
+    target_url: str = f"/api/image-tag/{self.test_imagetag.id}"
+    
+    # status OK on GET requests
+    response = client.get(target_url)
+    self.assertEqual(response.status_code, 200)
+    
+    # status OK on DELETE requests
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 200)
+
+    # error 405 on other requests
+    expected_message: bytes = \
+      b"This resource requires GET or DELETE method."
+    put_request_data: dict = {
+      "user-id": f"{self.test_user.id}",
+      "tag-id": "31b4354d-9dcb-40bc-8230-8b83bd8ff863"
+    }
+    response = client.put(target_url, json.dumps(put_request_data))
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+    response = client.patch(target_url)
+    self.assertEqual(response.status_code, 405)
+    self.assertEqual(response.content, expected_message)
+  
+  def test_user_auth(self):
+    ...
+  
+  def test_user_ownership(self):
+    ...
+
+  def test_respond_to_GET_request(self):
+    client: Client = self.client
+    target_url: str = f"/api/image-tag/{self.test_imagetag.id}"
+    
+    response = client.get(target_url)
+    expected_data: dict = {
+      "imagetag-id": f"{self.test_imagetag.id}",
+      "imagetag-image": f"{self.test_imagetag.image_id}",
+      "imagetag-tag": f"{self.test_imagetag.tag_id}"
+    }
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(json.loads(response.content), expected_data)
+
+  def test_respond_to_DELETE_request(self):
+    client: Client = self.client
+    target_url: str = f"/api/image-tag/{self.test_imagetag.id}"
+
+    expected_data = { "imagetag-id": f"{self.test_imagetag.id}" }
+    response = client.delete(target_url)
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(json.loads(response.content), expected_data)
+
+
+class NewImageTagViewTestCase(TestCase):
+  """Tests the new_imagetag_view, including GET and POST methods.
+
+  GET: return required details for creating a new ImageTag object.
+  POST: create a new ImageTag object associating image-id with tag-id.
+  """
+
+  @classmethod
+  def setUpTestData(cls) -> None:
+    cls.test_user: AppUser = AppUser.objects.create(username="test_user_1")
+    cls.test_image: Image = Image.objects.create(
+      source="test.png",
+      owner=cls.test_user,
+      description="this is the test image description"
+    )
+    cls.test_tag: Tag = Tag.objects.create(
+      name="test_tag",
+      owner=cls.test_user
+    )
+  
+  def setUp(self):
+    # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
+    self.client = Client()
+
+  def test_validate_accepted_method(self):
+    ...
+
+  def test_user_auth(self):
+    ...
+
+  def test_reject_malformed_request(self):
+    ...
+
+  def test_respond_to_GET_request(self):
+    ...
+
+  def test_respond_to_POST_request(self):
+    ...

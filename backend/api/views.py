@@ -223,10 +223,129 @@ def new_tag_view(request) -> HttpResponse:
         content=json.dumps(response_data)
     )
 
-def existing_imagetag_view(request, imagetag_id):
-    ...
-    return HttpResponse(status=503)
+def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
+    """Handles requests meant to manipulate existing ImageTag objects.
+    Due to the simple nature of ImageTag objects, the only real operation on
+    existing objects is deletion.
 
-def new_imagetag_view(request):
+    Accepts the following methods:
+    
+    GET: return details of the ImageTag object noted by request.imagetag_id.
+    DELETE: delete the ImageTag object noted by request.imagetag_id.
+    """
+
+    # validate that request is either GET or DELETE    
+    if request.method not in ["GET", "DELETE"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or DELETE method."
+        )
+    
+    # validate user is signed in, and request user-id matches
     ...
-    return HttpResponse(status=503)
+    # more substantial checks to come later;
+    # today's goal is only to get the URLs functional
+
+    # validate user owns specified resource
+    try:
+        target_imagetag: ImageTag = ImageTag.objects.get(id=imagetag_id)
+    except ImageTag.DoesNotExist:
+        return HttpResponse(status=403)
+    
+    # respond to GET requests with details of ImageTag object
+    if request.method == "GET":
+        response_data = {
+            "imagetag-id": f"{target_imagetag.id}",
+            "imagetag-image": f"{target_imagetag.image_id}",
+            "imagetag-tag": f"{target_imagetag.tag_id}"
+        }
+        return HttpResponse(
+            status=200,
+            content=json.dumps(response_data)
+        )
+    
+    # carry out DELETE requests and confirm to client
+    target_imagetag.delete()
+    response_data = {
+        "imagetag-id": f"{imagetag_id}"
+    }
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
+
+def new_imagetag_view(request) -> HttpResponse:
+    """Handles requests to create a new ImageTag object.
+    Accepts the following methods:
+
+    GET: return required details for creating a new ImageTag object.
+    POST: create a new ImageTag object associating image-id with tag-id.
+    """
+
+    # validate method is GET or POST
+    if request.method not in ["GET", "POST"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or POST method."
+        )
+
+    # validate user is signed in, and request user-id matches
+    try:
+        user_id: UUID = request.data['user-id']
+        requesting_user: AppUser = AppUser.objects.get(id=user_id)
+    except (AppUser.DoesNotExist, ValueError):
+        return HttpResponse(status=401)
+    # more substantial checks to come later;
+    # today's goal is only to get the URLs functional
+
+    # respond to GET requests with details required to create ImageTag object
+    if request.method == "GET":
+        return HttpResponse(
+            "Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  image-id: uuid of image to apply tag," \
+            "  tag-id: uuid of tag to apply to image" \
+            "}"
+        )
+
+    # validate request is properly formed
+    try:
+        image_id: UUID = request.data['image-id']
+        tag_id: UUID = request.data['tag-id']
+    except:
+        return HttpResponse(
+            status=400,
+            content="Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  image-id: uuid of image to apply tag," \
+            "  tag-id: uuid of tag to apply to image" \
+            "}"
+        )
+
+    # validate that requesting user owns specified resources
+    try:
+        user_images: QuerySet = Image.objects.filter(owner=requesting_user)
+        user_tags: QuerySet = Tag.objects.filter(owner=requesting_user)
+        image_id: UUID = request.data['image-id']
+        tag_id: UUID = request.data['tag-id']
+        if not user_images.filter(id=image_id):
+            raise
+        if not user_tags.filter(id=tag_id):
+            raise
+    except:
+        HttpResponse(status=403)
+
+    # if passed all checks, create ImageTag as specified
+    new_imagetag: ImageTag = ImageTag.objects.create(
+        image_id=image_id,
+        tag_id=tag_id
+    )
+    new_imagetag.save()
+    response_data = {"imagetag-id": new_imagetag.id}
+
+    return HttpResponse(
+        status=200,
+        content=response_data
+    )
