@@ -258,8 +258,8 @@ def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
     if request.method == "GET":
         response_data = {
             "imagetag-id": f"{target_imagetag.id}",
-            "imagetag-image": f"{target_imagetag.image_id}",
-            "imagetag-tag": f"{target_imagetag.tag_id}"
+            "image-id": f"{target_imagetag.image_id}",
+            "tag-id": f"{target_imagetag.tag_id}"
         }
         return HttpResponse(
             status=200,

@@ -631,8 +631,8 @@ class ExistingImageTagViewTestCase(TestCase):
     response = client.get(target_url)
     expected_data: dict = {
       "imagetag-id": f"{self.test_imagetag.id}",
-      "imagetag-image": f"{self.test_imagetag.image_id}",
-      "imagetag-tag": f"{self.test_imagetag.tag_id}"
+      "image-id": f"{self.test_imagetag.image_id}",
+      "tag-id": f"{self.test_imagetag.tag_id}"
     }
     self.assertEqual(response.status_code, 200)
     self.assertEqual(json.loads(response.content), expected_data)
