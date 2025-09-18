@@ -497,7 +497,7 @@ class ExistingTagViewTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data, expected_data)
   
-  def test_responsd_to_PUT_request(self):
+  def test_respond_to_PUT_request(self):
     client: Client = self.client
     target_url: str = f"/api/tag/{self.test_tag.id}"
 
@@ -505,13 +505,10 @@ class ExistingTagViewTestCase(TestCase):
       "user-id": f"{self.test_user.id}",
       "tag-name": "new_test_tag_name"
     }
-    expected_data: dict = {
-        "tag-id": f"{self.test_tag.id}",
-        "tag-name": "new_test_tag_name"
-    }
     response = client.put(target_url, json.dumps(put_request_data))
     self.assertEqual(response.status_code, 200)
-    self.assertEqual(json.loads(response.content), expected_data)
+    # successful response echos back the data that was sent
+    self.assertEqual(json.loads(response.content), put_request_data)
 
 
 class NewTagViewTestCase(TestCase):
@@ -582,7 +579,7 @@ class NewTagViewTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response.content, expected_data)
   
-  def test_responsd_to_POST_request(self):
+  def test_respond_to_POST_request(self):
     client: Client = self.client
     target_url: str = "/api/tag/new"
 

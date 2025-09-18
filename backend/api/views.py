@@ -93,10 +93,10 @@ def existing_tag_view(request, tag_id) -> HttpResponse:
     Accepts the following methods:
 
     GET: return details of the Tag object specified by request.tag_id.
-    POST: update the name of the Tag object specified by request.tag_id.
+    PUT: update the name of the Tag object specified by request.tag_id.
     DELETE: deletes the Tag object specified by request.tag_id.
 
-    request.tag_id is supplied by a matching pattern in the URL;
+    request.tag_id is supplied by a matching pattern in the URL:
     see api.urls module and https://docs.djangoproject.com/en/5.2/topics/http/urls/
     for more information.
     """
@@ -232,6 +232,10 @@ def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
     
     GET: return details of the ImageTag object noted by request.imagetag_id.
     DELETE: delete the ImageTag object noted by request.imagetag_id.
+
+    request.imagetag_id is supplied by a matching pattern in the URL:
+    see api.urls module and https://docs.djangoproject.com/en/5.2/topics/http/urls/
+    for more information.
     """
 
     # validate that request is either GET or DELETE    
