@@ -191,7 +191,7 @@ def new_tag_view(request) -> HttpResponse:
             "Requires POST request with data:" \
             "{" \
             "  user-id: uuid of resource owner," \
-            "  tag-name: string name to give specified tag" \
+            "  tag-name: string name to give specified tag " \
             "}"
         )
     
@@ -206,7 +206,7 @@ def new_tag_view(request) -> HttpResponse:
             content="Requires POST request with data:" \
             "{" \
             "  user-id: uuid of resource owner," \
-            "  tag-name: string name to give specified tag" \
+            "  tag-name: string name to give specified tag " \
             "}"
         )
     
@@ -301,7 +301,7 @@ def new_imagetag_view(request) -> HttpResponse:
             "{" \
             "  user-id: uuid of resource owner," \
             "  image-id: uuid of image to apply tag," \
-            "  tag-id: uuid of tag to apply to image" \
+            "  tag-id: uuid of tag to apply to image " \
             "}"
         )
 
@@ -316,7 +316,7 @@ def new_imagetag_view(request) -> HttpResponse:
             "{" \
             "  user-id: uuid of resource owner," \
             "  image-id: uuid of image to apply tag," \
-            "  tag-id: uuid of tag to apply to image" \
+            "  tag-id: uuid of tag to apply to image " \
             "}"
         )
 

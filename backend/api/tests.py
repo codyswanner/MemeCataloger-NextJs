@@ -550,7 +550,7 @@ class NewTagViewTestCase(TestCase):
       b"Requires POST request with data:" \
       b"{" \
       b"  user-id: uuid of resource owner," \
-      b"  tag-name: string name to give specified tag" \
+      b"  tag-name: string name to give specified tag " \
       b"}"
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response.content, expected_data)
@@ -723,7 +723,7 @@ class NewImageTagViewTestCase(TestCase):
       b"{" \
       b"  user-id: uuid of resource owner," \
       b"  image-id: uuid of image to apply tag," \
-      b"  tag-id: uuid of tag to apply to image" \
+      b"  tag-id: uuid of tag to apply to image " \
       b"}"
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response.content, expected_data)
