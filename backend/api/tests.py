@@ -408,28 +408,12 @@ class ExistingTagViewTestCase(TestCase):
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
     self.client = Client()
 
-  def test_validate_accepted_method(self):
+  def test_reject_disallowed_method(self):
+    """Allowed methods are tested separately."""
     
     client: Client = self.client
     target_url: str = f"/api/tag/{self.test_tag.id}"
     
-    # status OK on GET requests
-    response = client.get(target_url)
-    self.assertEqual(response.status_code, 200)
-    
-    # status OK on PUT requests
-    put_request_data: dict = {
-      "user-id": f"{self.test_user.id}",
-      "tag-name": "new_test_tag_name"
-    }
-    response = client.put(target_url, json.dumps(put_request_data))
-    self.assertEqual(response.status_code, 200)
-
-    # status OK on DELETE requests
-    response = client.delete(target_url)
-    self.assertEqual(response.status_code, 200)
-
-    # error 405 on other requests
     expected_message: bytes = \
       b"This resource requires GET, PUT or DELETE method."
     post_request_data: dict = {
@@ -525,23 +509,12 @@ class NewTagViewTestCase(TestCase):
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
     self.client = Client()
   
-  def test_validate_accepted_method(self):
+  def test_reject_disallowed_methods(self):
+    """Allowed methods are tested separately."""
+
     client: Client = self.client
     target_url: str = "/api/tag/new"
     
-    # status OK on GET requests
-    response = client.get(target_url)
-    self.assertEqual(response.status_code, 200)
-    
-    # status OK on POST requests
-    post_request_data: dict = {
-      "user-id": f"{self.test_user.id}",
-      "tag-name": "new_test_tag_name"
-    }
-    response = client.post(target_url, post_request_data)
-    self.assertEqual(response.status_code, 200)
-
-    # error 405 on other requests
     expected_message: bytes = \
       b"This resource requires GET or POST method."
     response = client.delete(target_url)
@@ -628,19 +601,12 @@ class ExistingImageTagViewTestCase(TestCase):
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
     self.client = Client()
 
-  def test_validate_accepted_method(self):
+  def test_reject_disallowed_method(self):
+    """Allowed methods are tested separately."""
+
     client: Client = self.client
     target_url: str = f"/api/image-tag/{self.test_imagetag.id}"
     
-    # status OK on GET requests
-    response = client.get(target_url)
-    self.assertEqual(response.status_code, 200)
-    
-    # status OK on DELETE requests
-    response = client.delete(target_url)
-    self.assertEqual(response.status_code, 200)
-
-    # error 405 on other requests
     expected_message: bytes = \
       b"This resource requires GET or DELETE method."
     put_request_data: dict = {
@@ -708,24 +674,12 @@ class NewImageTagViewTestCase(TestCase):
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#the-test-client
     self.client = Client()
 
-  def test_validate_accepted_method(self):
+  def test_reject_disallowed_method(self):
+    """Allowed methods are tested separately."""
+
     client: Client = self.client
     target_url: str = "/api/image-tag/new"
     
-    # status OK on GET requests
-    response = client.get(target_url)
-    self.assertEqual(response.status_code, 200)
-    
-    # status OK on POST requests
-    post_request_data: dict = {
-      "user-id": f"{self.test_user.id}",
-      "tag-id": f"{self.test_tag.id}",
-      "image-id": f"{self.test_image.id}"
-    }
-    response = client.post(target_url, post_request_data)
-    self.assertEqual(response.status_code, 200)
-
-    # error 405 on other requests
     expected_message: bytes = \
       b"This resource requires GET or POST method."
     response = client.delete(target_url)
