@@ -563,18 +563,13 @@ class NewTagViewTestCase(TestCase):
       "user-id": f"{self.test_user.id}",
       "tag-name": "new_test_tag_name"
     }
-    uuid_regex: str = \
-      r'[0-9a-fA-F]{8}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{12}'
     expected_name: str = "new_test_tag_name"
     response = client.post(target_url, post_request_data)
     response_data = json.loads(response.content)
+    new_tag: Tag = Tag.objects.get()  # the only Tag is the one we just made
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data['tag-name'], expected_name)
-    self.assertRegex(response_data['tag-id'], uuid_regex)
+    self.assertEqual(response_data['tag-id'], str(new_tag.id))
 
 
 class ExistingImageTagViewTestCase(TestCase):
