@@ -737,13 +737,9 @@ class NewImageTagViewTestCase(TestCase):
       "tag-id": f"{self.test_tag.id}",
       "image-id": f"{self.test_image.id}"
     }
-    uuid_regex: str = \
-      r'[0-9a-fA-F]{8}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{4}\-' \
-      r'[0-9a-fA-F]{12}'
     response = client.post(target_url, post_request_data)
     response_data = json.loads(response.content)
+    # The only ImageTag is the one we just made
+    new_imagetag: ImageTag = ImageTag.objects.get()
     self.assertEqual(response.status_code, 200)
-    self.assertRegex(response_data['imagetag-id'], uuid_regex)
+    self.assertEqual(response_data['imagetag-id'], str(new_imagetag.id))
