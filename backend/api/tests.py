@@ -489,10 +489,13 @@ class ExistingTagViewTestCase(TestCase):
       "user-id": f"{self.test_user.id}",
       "tag-name": "new_test_tag_name"
     }
+    expected_data: dict = {
+      "tag-id": f"{self.test_tag.id}",
+      "tag-name": "new_test_tag_name"
+    }
     response = client.put(target_url, json.dumps(put_request_data))
     self.assertEqual(response.status_code, 200)
-    # successful response echos back the data that was sent
-    self.assertEqual(json.loads(response.content), put_request_data)
+    self.assertEqual(json.loads(response.content), expected_data)
 
 
 class NewTagViewTestCase(TestCase):
