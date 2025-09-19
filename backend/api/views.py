@@ -109,10 +109,10 @@ def existing_tag_view(request, tag_id) -> HttpResponse:
         )
     
     # validate user auth
-    ...
+    ...  # auth not yet implemented
 
     # validate user owns specified resource
-    ...
+    ...  # not yet implemented
 
     # respond to GET requests with details of Tag object
     if request.method == "GET":
@@ -132,13 +132,12 @@ def existing_tag_view(request, tag_id) -> HttpResponse:
 
     # carry out DELETE requests and confirm to client
     if request.method == "DELETE":
-        # validate request properly formed
         try:
             target_tag: Tag = Tag.objects.get(id=tag_id)
         except Tag.DoesNotExist:
             return HttpResponse(status=400)
 
-        # carry out deletion
+        # carry out deletion and inform client
         target_tag.delete()
         response_data: dict = {"tag-id": f"{tag_id}"}
         return HttpResponse(
@@ -154,7 +153,7 @@ def existing_tag_view(request, tag_id) -> HttpResponse:
     except (Tag.DoesNotExist, KeyError):
         return HttpResponse(status=400)
 
-    # update tag name as specified
+    # update tag name as specified and inform client
     target_tag.name = new_tag_name
     target_tag.save()
     response_data = {
@@ -183,7 +182,7 @@ def new_tag_view(request) -> HttpResponse:
         )
 
     # validate user auth
-    ...
+    ...  # auth not yet implemented
 
     # respond to GET requests with details required to create Tag object
     if request.method == "GET":
