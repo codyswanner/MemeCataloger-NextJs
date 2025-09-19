@@ -248,6 +248,7 @@ def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
     ...  # auth not yet implemented
 
     # validate user owns specified resource
+    ... # more robust checks to come later
     try:
         target_imagetag: ImageTag = ImageTag.objects.get(id=imagetag_id)
     except ImageTag.DoesNotExist:
