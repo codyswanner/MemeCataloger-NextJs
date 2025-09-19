@@ -480,6 +480,9 @@ class ExistingTagViewTestCase(TestCase):
     response_data = json.loads(response.content)
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data, expected_data)
+    # tag actually deleted
+    with self.assertRaises(Tag.DoesNotExist):
+      Tag.objects.get(id=self.test_tag.id)  # error expected
   
   def test_respond_to_PUT_request(self):
     client: Client = self.client
@@ -494,8 +497,12 @@ class ExistingTagViewTestCase(TestCase):
       "tag-name": "new_test_tag_name"
     }
     response = client.put(target_url, json.dumps(put_request_data))
+    response_data = json.loads(response.content)
+    updated_tag: Tag = Tag.objects.get(id=self.test_tag.id)
     self.assertEqual(response.status_code, 200)
-    self.assertEqual(json.loads(response.content), expected_data)
+    # test object actually updated in backend
+    self.assertEqual(response_data, expected_data)
+    self.assertEqual(response_data['tag-name'], updated_tag.name)
 
 
 class NewTagViewTestCase(TestCase):
@@ -570,6 +577,8 @@ class NewTagViewTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data['tag-name'], expected_name)
     self.assertEqual(response_data['tag-id'], str(new_tag.id))
+    # test object actually created in backend, with correct name
+    self.assertEqual(new_tag.name, expected_name)
 
 
 class ExistingImageTagViewTestCase(TestCase):
@@ -645,6 +654,9 @@ class ExistingImageTagViewTestCase(TestCase):
     response = client.delete(target_url)
     self.assertEqual(response.status_code, 200)
     self.assertEqual(json.loads(response.content), expected_data)
+    # ImageTag actually deleted
+    with self.assertRaises(ImageTag.DoesNotExist):
+      ImageTag.objects.get(id=self.test_imagetag.id)  # error expected
 
 
 class NewImageTagViewTestCase(TestCase):
@@ -743,3 +755,6 @@ class NewImageTagViewTestCase(TestCase):
     new_imagetag: ImageTag = ImageTag.objects.get()
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data['imagetag-id'], str(new_imagetag.id))
+    # check object actually created in backend
+    self.assertEqual(new_imagetag.image_id.id, self.test_image.id)
+    self.assertEqual(new_imagetag.tag_id.id, self.test_tag.id)
