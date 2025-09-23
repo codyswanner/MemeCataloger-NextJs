@@ -24,7 +24,11 @@ class AppUserTestCase(TestCase):
     test_user: AppUser = AppUser.objects.get(username="test_user_1")
     self.assertNotEqual(test_user.id, 1)  # non-uuid default is 1
     is_uuid = re.fullmatch(
-      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      r'^[0-9a-fA-F]{8}' \
+      r'-[0-9a-fA-F]{4}' \
+      r'-4[0-9a-fA-F]{3}' \
+      r'-[89aAbB][0-9a-fA-F]{3}' \
+      r'-[0-9a-fA-F]{12}$',
       str(test_user.id)
     )
     self.assertTrue(is_uuid)
@@ -55,7 +59,11 @@ class ImageTestCase(TestCase):
     test_image: Image = Image.objects.get(source="test_source.png")
     self.assertNotEqual(test_image.id, 1)  # non-uuid default is 1
     is_uuid = re.fullmatch(
-      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      r'^[0-9a-fA-F]{8}' \
+      r'-[0-9a-fA-F]{4}' \
+      r'-4[0-9a-fA-F]{3}' \
+      r'-[89aAbB][0-9a-fA-F]{3}' \
+      r'-[0-9a-fA-F]{12}$',
       str(test_image.id)
     )
     self.assertTrue(is_uuid)
@@ -81,7 +89,11 @@ class TagTestCase(TestCase):
     test_tag: Tag = Tag.objects.get(name="test_tag")
     self.assertNotEqual(test_tag.id, 1)  # non-uuid default is 1
     is_uuid = re.fullmatch(
-      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      r'^[0-9a-fA-F]{8}' \
+      r'-[0-9a-fA-F]{4}' \
+      r'-4[0-9a-fA-F]{3}' \
+      r'-[89aAbB][0-9a-fA-F]{3}' \
+      r'-[0-9a-fA-F]{12}$',
       str(test_tag.id)
     )
     self.assertTrue(is_uuid)
@@ -89,13 +101,16 @@ class TagTestCase(TestCase):
 
 class ImageTagTestCase(TestCase):
   def setUp(self) -> None:
-    test_user: AppUser = AppUser.objects.create(username="test_user_1")
-    test_image: Image = Image.objects.create(
+    self.test_user: AppUser = AppUser.objects.create(username="test_user_1")
+    self.test_image: Image = Image.objects.create(
       source="test.png",
-      owner=test_user
+      owner=self.test_user
     )
-    test_tag: Tag = Tag.objects.create(name="test_tag", owner=test_user)
-    ImageTag.objects.create(image_id=test_image, tag_id=test_tag)
+    self.test_tag: Tag = Tag.objects.create(
+      name="test_tag",
+      owner=self.test_user
+    )
+    ImageTag.objects.create(image_id=self.test_image, tag_id=self.test_tag)
 
   def test_imagetag_exists(self) -> None:
     test_image: Image = Image.objects.get(source="test.png")
@@ -105,3 +120,15 @@ class ImageTagTestCase(TestCase):
       tag_id=test_tag
     )
     self.assertIsNotNone(test_imagetag)
+
+  def test_imagetag_id_is_uuid(self) -> None:
+    test_imagetag: ImageTag = ImageTag.objects.get(image_id=self.test_image)
+    is_uuid = re.fullmatch(
+      r'^[0-9a-fA-F]{8}' \
+      r'-[0-9a-fA-F]{4}' \
+      r'-4[0-9a-fA-F]{3}' \
+      r'-[89aAbB][0-9a-fA-F]{3}' \
+      r'-[0-9a-fA-F]{12}$',
+      str(test_imagetag.id)
+    )
+    self.assertTrue(is_uuid)
