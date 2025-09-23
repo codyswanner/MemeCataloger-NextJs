@@ -1,3 +1,12 @@
+"""Tests for Django views in the api package.
+Most test classes in this module check their target view for:
+  - data validation
+  - ownership of specified resource(s)*
+  - rejection of disallowed methods
+  - correct response to allowed methods
+* currently user auth is not implemented, so ownership checks are very basic.
+"""
+
 from django.test import Client, TestCase
 import json
 from api.models import AppUser, Image, Tag, ImageTag

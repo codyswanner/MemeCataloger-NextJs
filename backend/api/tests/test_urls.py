@@ -1,3 +1,9 @@
+"""Tests for Django URL patterns in the api package.
+Most test classes in this module check their target URL for:
+  - successful response
+  - expected data
+"""
+
 from django.test import Client, TestCase
 from api.models import AppUser, Image, Tag, ImageTag
 from django.conf import settings

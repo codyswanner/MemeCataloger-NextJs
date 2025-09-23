@@ -1,4 +1,4 @@
-"""Django tests for the api module.
+"""Django tests for the api package.
 Includes tests for the models, URLs and views.
 Intentionally excludes the following modules:
  - __init__: who tests init?  Is that a thing people do?
