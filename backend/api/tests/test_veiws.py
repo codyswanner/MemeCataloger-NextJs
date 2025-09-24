@@ -4,7 +4,7 @@ Most test classes in this module check their target view for:
   - ownership of specified resource(s)*
   - rejection of disallowed methods
   - correct response to allowed methods
-* currently user auth is not implemented, so ownership checks are very basic.
+* auth is not yet implemented, so ownership checks are basic where they exist.
 """
 
 from django.test import Client, TestCase
