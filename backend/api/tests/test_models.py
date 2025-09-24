@@ -2,7 +2,6 @@
 Test classes in this module check their target model for:
   - successful creation of a test object
   - a valid UUID assigned to the test object
-  - uniqueness where applicable
   - any custom fields on the model
 """
 
