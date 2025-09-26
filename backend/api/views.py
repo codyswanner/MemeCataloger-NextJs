@@ -11,7 +11,8 @@ Classes
 
 """
 
-# from django.http import HttpResponse
+import json
+from uuid import UUID
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from .models import AppUser, Image, Tag, ImageTag
@@ -72,17 +73,281 @@ class ImageTagListView(generics.ListAPIView):
     renderer_classes = [JSONRenderer]
 
 
-def user_view(_, **user_id):
+def user_view(_, **user_id) -> HttpResponse:
     return HttpResponse(
         "<div>You landed on the user view!</div>"
         f"<div>The user id is: {user_id}</div>"
         "<div>This page hasn't really been implemented for anything yet.</div>"
     )
 
-def image_view(_, **image_id):
+def image_view(_, **image_id) -> HttpResponse:
     requested_image: Image = Image.objects.get(id=image_id['image_id'])
 
     return HttpResponse(
         requested_image.source,
         content_type="image/png"
+    )
+
+def existing_tag_view(request, tag_id) -> HttpResponse:
+    """Handles requests meant to manipulate existing Tag objects.
+    Accepts the following methods:
+
+    GET: return details of the Tag object specified by request.tag_id.
+    PUT: update the name of the Tag object specified by request.tag_id.
+    DELETE: deletes the Tag object specified by request.tag_id.
+
+    request.tag_id is supplied by a matching pattern in the URL:
+    see api.urls module and https://docs.djangoproject.com/en/5.2/topics/http/urls/
+    for more information.
+    """
+
+    # validate that request is either GET, PUT or DELETE
+    if request.method not in ["GET", "PUT", "DELETE"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET, PUT or DELETE method."
+        )
+    
+    # validate user auth
+    ...  # auth not yet implemented
+
+    # validate user owns specified resource
+    ...  # not yet implemented
+
+    # respond to GET requests with details of Tag object
+    if request.method == "GET":
+        try:
+            target_tag: Tag = Tag.objects.get(id=tag_id)
+            response_data = {
+                "tag-id": f"{target_tag.id}",
+                "tag-name": f"{target_tag.name}",
+                "tag-owner": f"{target_tag.owner.id}"
+            }
+            return HttpResponse(
+                status=200,
+                content=json.dumps(response_data)
+            )
+        except Tag.DoesNotExist:
+            return HttpResponse(status=400)
+
+    # carry out DELETE requests and confirm to client
+    if request.method == "DELETE":
+        try:
+            target_tag: Tag = Tag.objects.get(id=tag_id)
+        except Tag.DoesNotExist:
+            return HttpResponse(status=400)
+
+        # carry out deletion and inform client
+        target_tag.delete()
+        response_data: dict = {"tag-id": f"{tag_id}"}
+        return HttpResponse(
+            status=200,
+            content=json.dumps(response_data)
+        )
+
+    # validate PUT request is properly formed
+    try:
+        target_tag: Tag = Tag.objects.get(id=tag_id)
+        request_data = json.loads(request.body)
+        new_tag_name: str = request_data['tag-name']
+    except (Tag.DoesNotExist, KeyError):
+        return HttpResponse(status=400)
+
+    # update tag name as specified and inform client
+    target_tag.name = new_tag_name
+    target_tag.save()
+    response_data = {
+        "tag-id": f"{tag_id}",
+        "tag-name": f"{target_tag.name}"
+    }
+
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
+
+def new_tag_view(request) -> HttpResponse:
+    """Handles requests to create a new Tag object.
+    Accepts the following methods:
+
+    GET: return required details for creating a new Tag object.
+    POST: create a new Tag object with given tag-name and owner by user-id.
+    """
+
+    # validate method is GET or POST
+    if request.method not in ["GET", "POST"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or POST method."
+        )
+
+    # validate user auth
+    ...  # auth not yet implemented
+
+    # respond to GET requests with details required to create Tag object
+    if request.method == "GET":
+        return HttpResponse(
+            "Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  tag-name: string name to give specified tag " \
+            "}"
+        )
+    
+    # validate request is properly formed
+    try:
+        tag_name:str = request.POST['tag-name']
+        user_id: UUID = request.POST['user-id']
+        requesting_user: AppUser = AppUser.objects.get(id=user_id)
+    except (KeyError, AppUser.DoesNotExist):
+        return HttpResponse(
+            status=400,
+            content="Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  tag-name: string name to give specified tag " \
+            "}"
+        )
+    
+    # if passed all checks, create Tag as specified
+    new_tag: Tag = Tag.objects.create(owner=requesting_user, name=tag_name)
+    new_tag.save()
+    response_data = {
+        "tag-id": f"{new_tag.id}",
+        "tag-name": new_tag.name
+    }
+
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
+
+def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
+    """Handles requests meant to manipulate existing ImageTag objects.
+    Due to the simple nature of ImageTag objects, the only real operation on
+    existing objects is deletion.
+
+    Accepts the following methods:
+    
+    GET: return details of the ImageTag object noted by request.imagetag_id.
+    DELETE: delete the ImageTag object noted by request.imagetag_id.
+
+    request.imagetag_id is supplied by a matching pattern in the URL:
+    see api.urls module and https://docs.djangoproject.com/en/5.2/topics/http/urls/
+    for more information.
+    """
+
+    # validate that request is either GET or DELETE    
+    if request.method not in ["GET", "DELETE"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or DELETE method."
+        )
+    
+    # validate user auth
+    ...  # auth not yet implemented
+
+    # validate user owns specified resource
+    ... # more robust checks to come later
+    try:
+        target_imagetag: ImageTag = ImageTag.objects.get(id=imagetag_id)
+    except ImageTag.DoesNotExist:
+        return HttpResponse(status=403)
+    
+    # respond to GET requests with details of ImageTag object
+    if request.method == "GET":
+        response_data = {
+            "imagetag-id": f"{target_imagetag.id}",
+            "image-id": f"{target_imagetag.image_id}",
+            "tag-id": f"{target_imagetag.tag_id}"
+        }
+        return HttpResponse(
+            status=200,
+            content=json.dumps(response_data)
+        )
+    
+    # carry out DELETE requests and confirm to client
+    target_imagetag.delete()
+    response_data = {
+        "imagetag-id": f"{imagetag_id}"
+    }
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
+    )
+
+def new_imagetag_view(request) -> HttpResponse:
+    """Handles requests to create a new ImageTag object.
+    Accepts the following methods:
+
+    GET: return required details for creating a new ImageTag object.
+    POST: create a new ImageTag object associating image-id with tag-id.
+    """
+
+    # validate method is GET or POST
+    if request.method not in ["GET", "POST"]:
+        return HttpResponse(
+            status=405,
+            content="This resource requires GET or POST method."
+        )
+
+    # validate user auth
+    ...  # auth not yet implemented
+
+    # respond to GET requests with details required to create ImageTag object
+    if request.method == "GET":
+        return HttpResponse(
+            "Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  image-id: uuid of image to apply tag," \
+            "  tag-id: uuid of tag to apply to image " \
+            "}"
+        )
+
+    # validate request is properly formed
+    try:
+        image_id: UUID = request.POST['image-id']
+        tag_id: UUID = request.POST['tag-id']
+    except KeyError:
+        return HttpResponse(
+            status=400,
+            content="Requires POST request with data:" \
+            "{" \
+            "  user-id: uuid of resource owner," \
+            "  image-id: uuid of image to apply tag," \
+            "  tag-id: uuid of tag to apply to image " \
+            "}"
+        )
+
+    # validate that requesting user owns specified resources
+    try:
+        user_id: UUID = request.POST['user-id']
+        requesting_user: AppUser = AppUser.objects.get(id=user_id)
+        user_images: QuerySet = Image.objects.filter(owner=requesting_user)
+        user_tags: QuerySet = Tag.objects.filter(owner=requesting_user)
+        if not user_images.filter(id=image_id):
+            raise Image.DoesNotExist
+        if not user_tags.filter(id=tag_id):
+            raise Tag.DoesNotExist
+    except (Image.DoesNotExist, Tag.DoesNotExist):
+        return HttpResponse(status=403)
+    except KeyError:
+        return HttpResponse(status=400)
+    except AppUser.DoesNotExist:
+        return HttpResponse(status=401)
+
+    # if passed all checks, create ImageTag as specified
+    target_image: Image = Image.objects.get(id=image_id)
+    target_tag: Tag = Tag.objects.get(id=tag_id)
+    new_imagetag: ImageTag = ImageTag.objects.create(
+        image_id=target_image,
+        tag_id=target_tag
+    )
+    new_imagetag.save()
+    response_data: dict = {"imagetag-id": f"{new_imagetag.id}"}
+
+    return HttpResponse(
+        status=200,
+        content=json.dumps(response_data)
     )
