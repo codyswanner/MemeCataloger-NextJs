@@ -150,8 +150,8 @@ class UrlImageTagListTestCase(TestCase):
       owner=cls.test_user
     )
     cls.test_imagetag: ImageTag = ImageTag.objects.create(
-      image_id=cls.test_image,
-      tag_id=cls.test_tag
+      image=cls.test_image,
+      tag=cls.test_tag
     )
   
   def setUp(self):
@@ -168,10 +168,10 @@ class UrlImageTagListTestCase(TestCase):
     # There is only one imagetag in the test database; grab it's data
     test_imagetag_data = self.response.json()[0]
     self.assertEqual(
-      test_imagetag_data["image_id"],
+      test_imagetag_data["image"],
       str(self.test_image.id))
     self.assertEqual(
-      test_imagetag_data['tag_id'],
+      test_imagetag_data['tag'],
       str(self.test_tag.id)
     )
     # And also check ID? -\(?)/-
