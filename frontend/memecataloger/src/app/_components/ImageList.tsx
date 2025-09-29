@@ -1,13 +1,9 @@
 import axios from 'axios';
 
 import Thumbnail from './Thumbnail';
-import './ImageList.css';
+import { Image } from '../interfaces';
+import '../_styles/ImageList.css';
 
-
-interface Image {
-  source: string,
-  id: number
-};
 
 export default async function ImageList() {
 

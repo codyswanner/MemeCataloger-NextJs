@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import Thumbnail from '../app/Thumbnail';
+import Thumbnail from '../app/_components/Thumbnail';
 
 
 describe('Thumbnail', () => {

@@ -1,9 +1,10 @@
+import { UUID } from "crypto";
 import { default as NextJsImage } from "next/image";
 
-import './thumbnail.css';
+import '../_styles/Thumbnail.css';
 
 
-export default function Thumbnail({src, id} : {src: string, id: number}){
+export default function Thumbnail({src, id} : {src: string, id: UUID}){
 
   const videoFileTypesRegex: RegExp = /.+\.(mp4|mov|avi|mkv|wmv|flv|webm)/i;
   const imageFileTypesRegex: RegExp = /.+\.(jpg|jpeg|png|webp|gif|bmp|svg)/i;

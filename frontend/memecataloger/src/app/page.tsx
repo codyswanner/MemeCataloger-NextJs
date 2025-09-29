@@ -1,4 +1,4 @@
-import ImageList from "./ImageList";
+import ImageList from "./_components/ImageList";
 import styles from "./page.module.css";
 
 
