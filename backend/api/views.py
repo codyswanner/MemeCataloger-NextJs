@@ -258,8 +258,8 @@ def existing_imagetag_view(request, imagetag_id) -> HttpResponse:
     if request.method == "GET":
         response_data = {
             "imagetag-id": f"{target_imagetag.id}",
-            "image-id": f"{target_imagetag.image_id}",
-            "tag-id": f"{target_imagetag.tag_id}"
+            "image-id": f"{target_imagetag.image.id}",
+            "tag-id": f"{target_imagetag.tag.id}"
         }
         return HttpResponse(
             status=200,
@@ -341,8 +341,8 @@ def new_imagetag_view(request) -> HttpResponse:
     target_image: Image = Image.objects.get(id=image_id)
     target_tag: Tag = Tag.objects.get(id=tag_id)
     new_imagetag: ImageTag = ImageTag.objects.create(
-        image_id=target_image,
-        tag_id=target_tag
+        image=target_image,
+        tag=target_tag
     )
     new_imagetag.save()
     response_data: dict = {"imagetag-id": f"{new_imagetag.id}"}

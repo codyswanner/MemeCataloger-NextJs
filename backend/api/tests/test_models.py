@@ -109,19 +109,17 @@ class ImageTagTestCase(TestCase):
       name="test_tag",
       owner=self.test_user
     )
-    ImageTag.objects.create(image_id=self.test_image, tag_id=self.test_tag)
+    ImageTag.objects.create(image=self.test_image, tag=self.test_tag)
 
   def test_imagetag_exists(self) -> None:
-    test_image: Image = Image.objects.get(source="test.png")
-    test_tag: Tag = Tag.objects.get(name="test_tag")
     test_imagetag: ImageTag = ImageTag.objects.get(
-      image_id=test_image,
-      tag_id=test_tag
+      image=self.test_image,
+      tag=self.test_tag
     )
     self.assertIsNotNone(test_imagetag)
 
   def test_imagetag_id_is_uuid(self) -> None:
-    test_imagetag: ImageTag = ImageTag.objects.get(image_id=self.test_image)
+    test_imagetag: ImageTag = ImageTag.objects.get(image=self.test_image)
     is_uuid = re.fullmatch(
       r'^[0-9a-fA-F]{8}' \
       r'-[0-9a-fA-F]{4}' \

@@ -223,8 +223,8 @@ class ExistingImageTagViewTestCase(TestCase):
       owner=cls.test_user
     )
     cls.test_imagetag: ImageTag = ImageTag.objects.create(
-      image_id=cls.test_image,
-      tag_id=cls.test_tag
+      image=cls.test_image,
+      tag=cls.test_tag
     )
   
   def setUp(self):
@@ -263,8 +263,8 @@ class ExistingImageTagViewTestCase(TestCase):
     response = client.get(target_url)
     expected_data: dict = {
       "imagetag-id": f"{self.test_imagetag.id}",
-      "image-id": f"{self.test_imagetag.image_id}",
-      "tag-id": f"{self.test_imagetag.tag_id}"
+      "image-id": f"{self.test_imagetag.image.id}",
+      "tag-id": f"{self.test_imagetag.tag.id}"
     }
     self.assertEqual(response.status_code, 200)
     self.assertEqual(json.loads(response.content), expected_data)
@@ -379,5 +379,5 @@ class NewImageTagViewTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     self.assertEqual(response_data['imagetag-id'], str(new_imagetag.id))
     # check object actually created in backend
-    self.assertEqual(new_imagetag.image_id.id, self.test_image.id)
-    self.assertEqual(new_imagetag.tag_id.id, self.test_tag.id)
+    self.assertEqual(new_imagetag.image.id, self.test_image.id)
+    self.assertEqual(new_imagetag.tag.id, self.test_tag.id)
