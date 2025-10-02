@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import Thumbnail from './Thumbnail';
-import { Image } from '../interfaces';
+import Image from '@/interfaces/Image';
 import '../_styles/ImageList.css';
 
 
@@ -14,7 +14,7 @@ export default async function ImageList() {
   return (
     <div className='image-grid-container'>
       {imageList.map((image) => 
-        <Thumbnail src={image.source} id={image.id} key={image.id}/>
+        <Thumbnail image={image} key={image.id}/>
       )}
     </div>
   );  
