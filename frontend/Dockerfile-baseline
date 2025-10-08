@@ -4,7 +4,7 @@
 ###############################################################################
 
 
-FROM node:lts-slim
+FROM node:current-slim
 
 RUN apt-get update \
 	&& apt-get upgrade -y \
@@ -29,4 +29,4 @@ RUN npx playwright install --with-deps firefox
 RUN npm install
 
 # USER front-runner
-CMD ["bash", "-c", "npm run dev; tail -f /dev/null"]
+CMD ["bash", "-c", "npm install; npm run dev; tail -f /dev/null"]
