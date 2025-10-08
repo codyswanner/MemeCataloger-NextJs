@@ -1,7 +1,7 @@
 import { default as NextJsImage } from "next/image";
 
 import Image from "@/interfaces/Image";
-import '../_styles/Thumbnail.css';
+import '@/app/_styles/Thumbnail.css';
 
 
 export default function Thumbnail({image} : {image: Image}){

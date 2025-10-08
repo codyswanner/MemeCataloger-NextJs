@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Thumbnail from './Thumbnail';
 import Image from '@/interfaces/Image';
-import '../_styles/ImageList.css';
+import '@/app/_styles/ImageList.css';
 
 
 export default async function ImageList() {
