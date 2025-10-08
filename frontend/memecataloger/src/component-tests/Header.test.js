@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import Header from "../app/header";
+import Header from "../app/_components/Header";
 
 
 describe("Page-Header", () => {
