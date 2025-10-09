@@ -1,0 +1,9 @@
+.tag-editor-container {
+  position: relative;
+  margin-left: auto;
+  margin-right: 2vw;
+}
+
+.tag-button {
+  margin-left: auto;
+}

@@ -1,7 +1,9 @@
+import axios from "axios";
 import { default as NextJsImage } from "next/image";
 
 import "./page.css";
-
+import Tag from "@/interfaces/Tag";
+import TagButton from "@/app/_components/TagButton";
 
 export default async function Home({
   params,
@@ -10,7 +12,11 @@ export default async function Home({
 }) {
   // params is a NextJS object for storing information from dynamic segments.
   // Learn more about dynamic segments here: https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-dynamic-segment
-  const {imageId} = await params  
+  const {imageId} = await params
+
+  axios.defaults.baseURL = 'http://backend:8000';
+  const response = await axios.get('/api/tag/');
+  const tagList: Tag[] = response.data;
 
   return (
     <div>
@@ -30,6 +36,9 @@ export default async function Home({
             width={4000}
             height={4000}
           />
+          <div className="footer">
+            <TagButton tagsArray={tagList} />
+          </div>
         </div>
       </main>
     </div>

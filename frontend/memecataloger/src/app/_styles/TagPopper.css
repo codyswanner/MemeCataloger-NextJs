@@ -1,0 +1,14 @@
+.tag-popper {
+  position: absolute;
+  bottom: 4vh;
+  left: -4.5vw;
+  width: 120px;
+}
+
+.tag-checkbox-list {
+  margin: 5%;
+}
+
+.form-controls {
+  margin: 5%;
+}
