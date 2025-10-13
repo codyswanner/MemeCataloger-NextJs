@@ -1,8 +1,9 @@
 .tag-popper {
   position: absolute;
   bottom: 4vh;
-  left: -4.5vw;
+  left: -250%;
   width: 120px;
+  /* margin-right: 5%; */
 }
 
 .tag-checkbox-list {
