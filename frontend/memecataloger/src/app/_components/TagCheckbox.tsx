@@ -2,10 +2,15 @@
 
 import { useRef } from 'react';
 
-import { Tag } from '../interfaces';
+import Tag from '@/interfaces/Tag';
 
 
-export default function TagCheckbox({tag} : {tag: Tag}) {
+export default function TagCheckbox({
+  tag, checked
+} : {
+  tag: Tag,
+  checked: boolean
+}) {
 
   const inputRef = useRef(null);
 
@@ -20,6 +25,7 @@ export default function TagCheckbox({tag} : {tag: Tag}) {
         name={tag.id}
         id={`checkbox-${tag.id}`}
         value={tag.name}
+        checked={checked}
         ref={inputRef}
         onChange={() => handleCheckboxChange()}
       />

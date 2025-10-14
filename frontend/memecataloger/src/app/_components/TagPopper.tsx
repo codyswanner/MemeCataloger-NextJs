@@ -2,20 +2,36 @@
 
 import { RefObject } from 'react';
 import TagCheckbox from './TagCheckbox';
-import { Tag } from '../interfaces';
+import Tag from '@/interfaces/Tag';
 import '../_styles/TagPopper.css';
+import ImageTag from '@/interfaces/ImageTag';
+import { UUID } from 'crypto';
 
 
 export default function TagPopper({
-  dialogRef, tagsArray
+  dialogRef, imageId, tagsArray, imageTagArray
 } : {
-  dialogRef: RefObject<HTMLDialogElement | null>, tagsArray: Array<Tag>
+  dialogRef: RefObject<HTMLDialogElement | null>,
+  imageId: UUID,
+  tagsArray: Tag[],
+  imageTagArray: ImageTag[]
 }) {
 
-  const handleTagPopperSubmit = () => {};
+  const checkTagAssignment = (tagId: UUID) => {
 
-  const handleTagPopperClear = () => {};
-  
+    const matchingImageTags: ImageTag[] = imageTagArray.filter((imageTag) => {
+      return imageTag.image == imageId && imageTag.tag == tagId;
+    });
+
+    if (matchingImageTags?.length) {
+      console.log(`Tag ${tagId} is checked!`);
+      return true;
+    };
+
+    console.log(`Tag ${tagId} is NOT checked!`);
+    return false;
+  };
+
   return(
       <dialog className='tag-popper' ref={dialogRef}>
         <div className='tag-search'>
@@ -28,24 +44,10 @@ export default function TagPopper({
               <TagCheckbox 
               tag={tag}
               key={tag.id}
+              checked={checkTagAssignment(tag.id)}
               />
             )
           })}
-        </div>
-
-        <div className='form-controls'>
-          {/* Submit / Clear */}
-          <span>
-            <button type='button' onClick={() => handleTagPopperSubmit()}>
-              Submit
-            </button>
-          </span>
-          <span>
-            <button type='button' onClick={() => handleTagPopperClear()}>
-              Clear
-            </button>
-          </span>
-          
         </div>
 
       </dialog>
