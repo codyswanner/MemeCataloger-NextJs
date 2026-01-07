@@ -19,14 +19,14 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
-    expose:
+    ports:
       - 3306:3306
 
   frontend:
     build:
       context: ./frontend
     ports:
-      - 3000:3000
+     - 3000:3000
     volumes:
       - ./frontend/memecataloger:/home/front-runner/memecataloger
 
