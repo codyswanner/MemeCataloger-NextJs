@@ -25,7 +25,7 @@ jobs:
     - name: Set up containers
       run: docker compose up -d
     - name: Install npm dependencies
-      run: npm install
+      run: docker exec memecataloger-nextjs-frontend-1 npm install
     - name: Ruff Linter
       run: |
         docker exec memecataloger-nextjs-backend-1 python -m ruff check
