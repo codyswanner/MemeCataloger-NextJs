@@ -23,7 +23,27 @@ jobs:
         printf '%s' '${{ secrets.DJANGO_DB_PW }}' >> django-db-pw.txt
         printf '%s' '${{ secrets.DB_PW }}' >> db-pw.txt
     - name: Set up containers
-      run: docker compose up -d
+      run: |
+        docker compose up -d; echo "Checking MySQL health status..."
+          attempt_counter=0
+          max_attempts=24
+          until [ "$(docker inspect --format="{{.State.Health.Status}}" memecataloger-nextjs-db-1)" == "healthy" ]; do
+            if [ ${attempt_counter} -eq ${max_attempts} ];then
+              echo "Max attempts reached"
+              exit 1
+            fi
+
+            health_status=$(docker inspect --format="{{.State.Health.Status}}" memecataloger-nextjs-db-1)
+            echo "Current MySQL health status: ${health_status}"
+
+            if [ "${health_status}" != "healthy" ]; then
+              echo "Displaying last 10 lines from Docker logs:"
+              docker logs --tail 10 my_container
+            fi
+
+            attempt_counter=$(($attempt_counter+1))
+            sleep 5
+          done
     - name: Install npm dependencies
       run: docker exec memecataloger-nextjs-frontend-1 npm install
     - name: Ruff Linter
